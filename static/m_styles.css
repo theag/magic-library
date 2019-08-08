@@ -1,7 +1,14 @@
 body {
     font-family: Arial, sans-serif;
     margin: 8px 0 0 8px;
+    font-size: x-large;
 }
+
+/* Rules for sizing the icon. */
+.material-icons .md-18 { font-size: 18px; }
+.material-icons .md-24 { font-size: 24px; }
+.material-icons .md-36 { font-size: 36px; }
+.material-icons .md-48 { font-size: 48px; }
 
 .topnav {
     overflow: hidden;
@@ -17,9 +24,9 @@ body {
 
 .topnav .title {
   color: white;
-  padding: 14px 16px;
+  padding: 28px 32px;
   text-decoration: none;
-  font-size: 17px;
+  font-size: 32px;
   display: block;
 }
 
@@ -33,7 +40,7 @@ body {
 }
 
 .overlay {
-  /* Height & width depends on how you want to reveal the overlay (see JS below) */    
+  /* Height & width depends on how you want to reveal the overlay (see JS below) */
   height: 100%;
   width: 0;
   position: fixed; /* Stay in place */
@@ -161,15 +168,15 @@ input:checked + .slider:before {
 }
 
 input[type=button], input[type=submit] {
-    min-width: 64px;
-    height: 36px;
-    padding: 0 16px;
+    min-width: 128px;
+    height: 72px;
+    padding: 0 32px;
     background-color: #4CAF50;
     color: white;
     border: none;
     display: inline-block;
-    font-size: 16px;
-    border-radius: 8px;
+    font-size: 32px;
+    border-radius: 16px;
 }
 
 input[type=text] {
