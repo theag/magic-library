@@ -7,6 +7,14 @@ import os, json, re
 
 bad_set_types = ["promo","funny","archenemy","starter","memorabilia"]
 
+def mobile(request):
+    MOBILE_AGENT_RE = re.compile(r".*(iphone|mobile|androidtouch)", re.IGNORECASE)
+
+    if MOBILE_AGENT_RE.match(request.META['HTTP_USER_AGENT']):
+        return True
+    else:
+        return False
+
 # Create your views here.
 def index(request):
     context = {"decks":Deck.objects.all().order_by('name')}

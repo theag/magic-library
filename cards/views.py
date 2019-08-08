@@ -2,7 +2,7 @@ from django.shortcuts import render,redirect
 from django.conf import settings
 from .models import Card,Type,Set
 from decks.models import Deck,DeckCard
-import os, json
+import os, json, re
 
 bad_set_types = ["promo","funny","archenemy","starter","memorabilia"]
 
@@ -163,6 +163,15 @@ class AdvancedSearch:
                 rv = rv or r
         return rv
 
+        
+def mobile(request):
+    MOBILE_AGENT_RE = re.compile(r".*(iphone|mobile|androidtouch)", re.IGNORECASE)
+
+    if MOBILE_AGENT_RE.match(request.META['HTTP_USER_AGENT']):
+        return True
+    else:
+        return False
+        
 # Create your views here.
 def index(request):
     context = None
@@ -271,8 +280,11 @@ def index(request):
         else:
             context = {"search_results":Card.objects.all().order_by('name')}
     except KeyError:
-        context = {"search_results":Card.objects.all().order_by('name'),"test":request.META['HTTP_USER_AGENT']}
-    return render(request, 'cards/index.html', context)
+        context = {"search_results":Card.objects.all().order_by('name')}
+    if mobile(request):
+        return render(request, 'cards/m_index.html', context)
+    else:
+        return render(request, 'cards/index.html', context)
 
 def add(request):
     c = Card(manaCost="")

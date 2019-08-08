@@ -1,7 +1,8 @@
 {% load static %}
 <head>
     <title>Magic Library - Cards</title>
-    <link href="{% static 'styles.css' %}" type="text/css" rel="stylesheet"></link>
+    <link href="{% static 'm_styles.css' %}" type="text/css" rel="stylesheet"></link>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         .addBorder {
             border-collapse: collapse;
@@ -19,8 +20,7 @@
     </script>
 </head>
 <body>
-    <h1>Magic Library - Cards</h1>
-    {% include "cards/horizontal_navigation_bar.html" with page_name="search" %}
+    {% include "cards/m_top_bar.html" with page_name="Magic Library - Cards" %}
     <div style="margin-top:10px">
         <form id="frmMain" action="{% url 'cards:index' %}" method="post">
             {% csrf_token %}
@@ -103,8 +103,7 @@
             </div>
             {% else %}
             <div>
-                <span>Search:</span>
-                <input name="simple_search" type="text" {% if simple_search %}value="{{ simple_search }}"{% endif%} />
+                <input name="simple_search" type="text" {% if simple_search %}value="{{ simple_search }}"{% endif%} placeholder="Search" />
                 <input type="submit" value="Search" />
                 <input type="button" value="Advanced" onclick="doSubmit('switcha')" />
             </div>
