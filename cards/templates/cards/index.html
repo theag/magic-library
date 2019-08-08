@@ -21,6 +21,7 @@
 <body>
     <h1>Magic Library - Cards</h1>
     {% include "cards/horizontal_navigation_bar.html" with page_name="search" %}
+    {{test}}
     <div style="margin-top:10px">
         <form id="frmMain" action="{% url 'cards:index' %}" method="post">
             {% csrf_token %}

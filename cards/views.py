@@ -271,8 +271,7 @@ def index(request):
         else:
             context = {"search_results":Card.objects.all().order_by('name')}
     except KeyError:
-        print("key error")
-        context = {"search_results":Card.objects.all().order_by('name')}
+        context = {"search_results":Card.objects.all().order_by('name'),"test":request.META['HTTP_USER_AGENT']}
     return render(request, 'cards/index.html', context)
 
 def add(request):
