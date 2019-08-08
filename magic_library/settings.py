@@ -23,9 +23,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '2mw19svyc!^n+9#&!5$&r_dh*i$%92h7aw#9jeil8b=5k6j&6_'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['mathlady.pythonanywhere.com']
 
 
 # Application definition

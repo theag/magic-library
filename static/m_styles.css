@@ -1,14 +1,17 @@
 body {
     font-family: Arial, sans-serif;
     margin: 8px 0 0 8px;
-    font-size: x-large;
+}
+
+* {
+    font-size: 18px;
 }
 
 /* Rules for sizing the icon. */
-.material-icons .md-18 { font-size: 18px; }
-.material-icons .md-24 { font-size: 24px; }
-.material-icons .md-36 { font-size: 36px; }
-.material-icons .md-48 { font-size: 48px; }
+.material-icons.md-18 { font-size: 18px; }
+.material-icons.md-24 { font-size: 24px; }
+.material-icons.md-36 { font-size: 36px; }
+.material-icons.md-48 { font-size: 48px; }
 
 .topnav {
     overflow: hidden;
@@ -35,7 +38,7 @@ body {
     position: absolute;
     right: 0;
     top: 0;
-    padding: 13px 16px;
+    padding: 16px 16px;
     color: white;
 }
 
@@ -53,39 +56,34 @@ body {
   transition: 0.5s; /* 0.5 second transition effect to slide in or slide down the overlay (height or width, depending on reveal) */
 }
 
-/* Position the content inside the overlay */
 .overlay-content {
-  position: relative;
-  top: 25%; /* 25% from the top */
-  width: 100%; /* 100% width */
-  margin-top: 30px; /* 30px top margin to avoid conflict with the close button on smaller screens */
+    padding-left: 20px;
 }
 
 /* The navigation links inside the overlay */
 .overlay a {
   padding: 8px;
   text-decoration: none;
-  font-size: 36px;
+  font-size: 72px;
   color: #818181;
   display: block; /* Display block instead of inline */
-  transition: 0.3s; /* Transition effects on hover (color) */
 }
 
 /* Position the close button (top right corner) */
 .overlay .closebtn {
-  position: absolute;
-  top: 20px;
-  right: 45px;
-  font-size: 60px;
+  text-align: right;
+  padding-right: 20px;
+}
+
+.closebtn a {
+    font-size: 120px;
 }
 
 /* When the height of the screen is less than 450 pixels, change the font-size of the links and position the close button again, so they don't overlap */
 @media screen and (max-height: 450px) {
-  .overlay a {font-size: 20px}
-  .overlay .closebtn {
-    font-size: 40px;
-    top: 15px;
-    right: 35px;
+  .overlay a {font-size: 48px}
+  .closebtn a {
+    font-size: 80px;
   }
 }
 
@@ -185,10 +183,23 @@ input[type=text] {
     border-bottom: 1px solid gray;
     background-color: WhiteSmoke;
     border-radius: 2px;
+    font-size: 36px;
 }
 
 input[type=text]:focus {
     background-color: LightGray;
     outline: none;
     border-bottom: 2px solid #4CAF50;
+}
+
+td a {
+    min-width: 128px;
+    line-height: 72px;
+    padding: 20px 32px;
+    color: black;
+    text-decoration: none;
+    border: none;
+    display: inline-block;
+    font-size: 32px;
+    border-radius: 16px;
 }
