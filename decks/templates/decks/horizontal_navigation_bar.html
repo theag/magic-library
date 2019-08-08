@@ -1,0 +1,5 @@
+<ul class="horizontal_nav_bar">
+    <li><a href="{% url 'cards:index' %}">Cards</a></li>
+    <li><a href="{% url 'decks:index' %}" {% if page_name == "index" %}class="hor_active"{% endif %}>Decks</a></li>
+    <li><a href="{% url 'decks:add' %}" {% if page_name == "add" %}class="hor_active"{% endif %}>Add</a></li>
+</ul>

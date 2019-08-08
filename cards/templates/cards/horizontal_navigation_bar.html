@@ -1,0 +1,6 @@
+<ul class="horizontal_nav_bar">
+    <li><a href="{% url 'decks:index' %}">Decks</a></li>
+    <li><a href="{% url 'cards:index' %}" {% if page_name == "search" %}class="hor_active"{% endif %}>Search</a></li>
+    <li><a href="{% url 'cards:add' %}" {% if page_name == "add" %}class="hor_active"{% endif %}>Add</a></li>
+    <li><a href="{% url 'cards:json' %}" {% if page_name == "json" %}class="hor_active"{% endif %}>Add JSON</a></li>
+</ul>

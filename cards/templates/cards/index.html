@@ -1,0 +1,149 @@
+{% load static %}
+<head>
+    <title>Magic Library - Cards</title>
+    <link href="{% static 'styles.css' %}" type="text/css" rel="stylesheet"></link>
+    <style>
+        .addBorder {
+            border-collapse: collapse;
+        }
+        
+        .addBorder, .addBorder td, .addBorder th {
+            border: 1px solid black;
+        }
+    </style>
+    <script>
+        function doSubmit(action) {
+            document.getElementById("hdnAction").value = action;
+            document.getElementById("frmMain").submit();
+        }
+    </script>
+</head>
+<body>
+    <h1>Magic Library - Cards</h1>
+    {% include "cards/horizontal_navigation_bar.html" with page_name="search" %}
+    <div style="margin-top:10px">
+        <form id="frmMain" action="{% url 'cards:index' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="action" id="hdnAction" value="search" />
+            {% if isadvanced %}
+            <div style="float:left;margin-top:10px">
+                <div>Search:</div>
+                <div style="margin-top:5px; font-size:10px">And<label class="switch"><input type="checkbox" name="andAll" {% if andAll %}checked{% endif %} /><span class="slider"></span></label>Or</div>
+                <div style="margin-top:10px"><span class="search-header">Colour</span><span style="font-size:10px">And</span><label class="switch"><input type="checkbox" name="andColour" {% if andColour %}checked{% endif %} /><span class="slider"></span></label><span style="font-size:10px">Or</span></div>
+                <div style="margin-top:5px">
+                    <div>
+                    <label><input type="checkbox" name="white" {% if white %}checked{% endif %} />White</label>
+                    <label><input type="checkbox" name="blue" {% if blue %}checked{% endif %} />Blue</label>
+                    <label><input type="checkbox" name="black" {% if black %}checked{% endif %} />Black</label>
+                    </div><div>
+                    <label><input type="checkbox" name="red" {% if red %}checked{% endif %} />Red</label>
+                    <label><input type="checkbox" name="green" {% if green %}checked{% endif %} />Green</label>
+                    <label><input type="checkbox" name="colourless" {% if colourless %}checked{% endif %} />Colourless</label>
+                    </div>
+                </div>
+                {% if supers %}
+                <div style="margin-top:10px"><span class="search-header">Supertype</span><span style="font-size:10px">And</span><label class="switch"><input type="checkbox" name="andSuper" {% if andSuper %}checked{% endif %} /><span class="slider"></span></label><span style="font-size:10px">Or</span></div>
+                <div style="margin-top:5px">
+                    <div>
+                    {% for t in supers %}
+                    <label><input type="checkbox" name="super-{{ t.id }}" {% if t.id in superChecked %}checked{% endif %} />{{ t.name }}</label>
+                    {% if forloop.counter|divisibleby:3 %}</div><div>{% endif %}
+                    {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                <div style="margin-top:10px"><span class="search-header">Type</span><span style="font-size:10px">And</span><label class="switch"><input type="checkbox" name="andType" {% if andType %}checked{% endif %} /><span class="slider"></span></label><span style="font-size:10px">Or</span></div>
+                <div style="margin-top:5px">
+                    <div>
+                    {% for t in types %}
+                    <label><input type="checkbox" name="type-{{ t.id }}" {% if t.id in typeChecked %}checked{% endif %} />{{ t.name }}</label>
+                    {% if forloop.counter|divisibleby:3 %}</div><div>{% endif %}
+                    {% endfor %}
+                    </div>
+                </div>
+                <div style="margin-top:10px"><span class="search-header">CMC</span><span style="font-size:10px">(comma seperated)</span></div>
+                <div style="margin-top:5px"><input type="text" name="cmc" value="{{ cmc }}" /></div>
+                <div style="margin-top:10px"><span class="search-header">Rules Text</span><span style="font-size:10px">And</span><label class="switch"><input type="checkbox" name="andText" {% if andText %}checked{% endif %} /><span class="slider"></span></label><span style="font-size:10px">Or</span></div>
+                <div style="margin-top:5px">
+                    <textarea name="text" rows="5" cols="25">{{ text }}</textarea>
+                </div>
+                <div style="margin-top:10px">
+                    <span class="search-header">Decks</span><span style="font-size:10px">(comma seperated)</span>
+                    <input type="button" onclick="document.getElementById('divDeckList').style.display='block';" value="View List" />
+                    <label><input type="checkbox" name="nodeck" {% if nodeck %}checked{% endif %} />Not in a deck</label>
+                </div>
+                <div style="margin-top:5px">
+                    <input type="text" name="decks" value="{{decks}}" />
+                </div>
+                <div style="margin-top:10px"><span class="search-header">Notes</span><span style="font-size:10px">And</span><label class="switch"><input type="checkbox" name="andNotes" {% if andNotes %}checked{% endif %} /><span class="slider"></span></label><span style="font-size:10px">Or</span></div>
+                <div style="margin-top:5px">
+                    <textarea name="notes" rows="5" cols="25">{{ notes }}</textarea>
+                </div>
+                <div style="margin-top:10px"><span class="search-header">Card Count</span></div>
+                <div style="margin-top:5px">
+                    <select name="countOperator">
+                        <option value="0" {% if countOperator == 0 %}selected{% endif %}>&lt;</option>
+                        <option value="1" {% if countOperator == 1 %}selected{% endif %}>&lt;=</option>
+                        <option value="2" {% if countOperator == 2 %}selected{% endif %}>=</option>
+                        <option value="3" {% if countOperator == 3 %}selected{% endif %}>&gt;=</option>
+                        <option value="4" {% if countOperator == 4 %}selected{% endif %}>&gt;</option>
+                    </select>
+                    <input type="number" name="countNumber" min="0" value="{{ countNumber }}" style="width:50px" />
+                </div>
+                <div style="margin-top:10px"><label class="search-header">Adds Mana<input type="checkbox" name="addsMana" {% if addsMana %}checked{% endif %}/></label></div>
+                <div style="margin-top:10px"><span class="search-header">Sets</span><span style="font-size:10px">(comma seperated)</span>
+                    <span style="font-size:10px">And</span><label class="switch"><input type="checkbox" name="andSets" {% if andSets %}checked{% endif %} /><span class="slider"></span></label><span style="font-size:10px">Or</span>
+                    <label><input type="checkbox" name="nosets" {% if nosets %}checked{% endif %} />Has no sets</label></div>
+                <div style="margin-top:5px"><input type="text" name="sets" value="{{ sets }}" /></div>
+                <div style="margin-top:5px">
+                    <input type="button" value="Search" onclick="doSubmit('advanced')" />
+                    <input type="button" value="Reset" onclick="doSubmit('switcha')" />
+                    <input type="button" value="Simple" onclick="doSubmit('switchs')" />
+                </div>
+            </div>
+            {% else %}
+            <div>
+                <span>Search:</span>
+                <input name="simple_search" type="text" {% if simple_search %}value="{{ simple_search }}"{% endif%} />
+                <input type="submit" value="Search" />
+                <input type="button" value="Advanced" onclick="doSubmit('switcha')" />
+            </div>
+            {% endif %}
+            <div style="margin-top:10px{% if isadvanced %};float:left;margin-left:10px;padding-bottom:8px{% endif %}">
+                {% if search_results %}
+                <table class="addBorder" style="text-align:center">
+                    <tr>
+                        <th>Name</th>
+                        <th>Mana</th>
+                        <th>CMC</th>
+                        <th>Type</th>
+                        <th>Count</th>
+                    </tr>
+                    {% for result in search_results %}
+                    <tr>
+                        <td><a href="{% url 'cards:edit' result.id%}">{{ result.name }}</a></td>
+                        <td style="padding-left:5px;padding-right:5px">{% include "cards/mana_view.html" with mana=result.manaArr %}</td>
+                        <td>{{ result.cmc }}</td>
+                        <td>{{ result.regular_types }}</td>
+                        <td>{{ result.count }}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+                {% else %}
+                <div style="margin-top:10px">No results found</div>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+    {% if deck_list %}
+    <div class="gray" id="divDeckList">
+        <div class="popup">
+            <div>Decks</div>
+            {% for d in deck_list %}
+            <div>{{d.name}}</div>
+            {% endfor %}
+            <div><input type="button" onclick="document.getElementById('divDeckList').style.display='';" value="OK" /></div>
+        </div>
+    </div>
+    {% endif %}
+</body>

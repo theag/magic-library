@@ -1,0 +1,35 @@
+{% load static %}
+<head>
+    <title>Magic Library - Decks</title>
+    <link href="{% static 'styles.css' %}" type="text/css" rel="stylesheet"></link>
+    <style>
+        .addBorder {
+            border-collapse: collapse;
+        }
+        
+        .addBorder, .addBorder td, .addBorder th {
+            border: 1px solid black;
+        }
+    </style>
+    <script>
+        function doSubmit(action) {
+            document.getElementById("hdnAction").value = action;
+            document.getElementById("frmMain").submit();
+        }
+    </script>
+</head>
+<body>
+    <h1>Magic Library - Decks</h1>
+    {% include "decks/horizontal_navigation_bar.html" with page_name="index" %}
+    <div class="horizontal_nav_bar_spacer"></div>
+    <ul class="horizontal_nav_bar">
+        {% for deck in decks %}
+        <li><a href="{% url 'decks:deck' deck.id %}">{{ deck.name }}</a></li>
+        {% endfor %}
+    </ul>
+    <div style="margin-top:10px">
+        <form id="frmMain" action="{% url 'decks:index' %}" method="post">
+            {% csrf_token %}
+        </form>
+    </div>
+</body>

@@ -1,0 +1,148 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 8px 0 0 8px;
+}
+
+.horizontal_nav_bar {
+    list-style-type: none;
+    margin: 0 0 0 -8px;
+    border-right: 8px solid #5F5F5F;
+    padding: 0;
+    background-color: #5F5F5F;
+    top: 0;
+    overflow: hidden;
+    width: 100%;
+    vertical-align: center;
+}
+
+.horizontal_nav_bar_spacer {
+    background-color: #5F5F5F;
+    height: 5px;
+    margin: 0 0 0 -8px;
+}
+
+.horizontal_nav_bar li {
+    float: left;
+}
+
+.horizontal_nav_bar  li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    margin: 0;
+}
+
+.horizontal_nav_bar li a.hor_active {
+    background-color: #4CAF50;
+}
+
+.popup {
+    border: 3px solid DarkGreen;
+    background-color: white;
+    padding: 0;
+    width: 442px;
+    margin: 15% auto;
+}
+
+.popup > div:first-child {
+    margin: 0;
+    padding: 0;
+    background-color: DarkGreen;
+    width: 100%;
+    color: white;
+}
+
+.popup > div:nth-child(n+2) {
+    margin: 5px;
+}
+
+.gray {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    background-color: rgba(0,0,0,0.4);
+    display: none;
+}
+
+.clickable {
+    cursor: hand;
+    padding: 2px;
+}
+
+.clickable:hover {
+    background-color: Aqua;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 30px;
+  height: 17px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+  border-radius: 17px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 13px;
+  width: 13px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(13px);
+  -ms-transform: translateX(13px);
+  transform: translateX(13px);
+}
+
+.search-header {
+    font-weight: bold;
+    font-size: 0.75em;
+    margin-right: 5px;
+}
+
+.pleaseWait {
+    border: 1px solid black;
+    background-color: LemonChiffon;
+    padding: 20px;
+    width: 100px;
+    margin: 100px auto;
+    text-align: center;
+    font-weight: bold;
+}
