@@ -1,4 +1,5 @@
 from django.shortcuts import render,redirect
+from django.conf import settings
 from .models import Card,Type,Set
 from decks.models import Deck,DeckCard
 import os, json
@@ -408,10 +409,10 @@ def edit(request, card_id):
                             t = t[0]
                         c.types.add(t)
         elif action == "sets":
-            f = open('SetList.json','r')
+            f = open(os.path.join(settings.BASE_DIR, 'SetList.json'),'r')
             sets = json.load(f)
             f.close()
-            f = open('AllCards.json','r',encoding='utf8')
+            f = open(os.path.join(settings.BASE_DIR, 'AllCards.json'),'r',encoding='utf8')
             cards = json.load(f)
             f.close()
             if c.name in cards:
@@ -456,7 +457,7 @@ def add_json(request):
     context = {"decks":Deck.objects.all().order_by("name")}
     try:
         action = request.POST['action']
-        f = open('AllCards.json','r',encoding='utf8')
+        f = open(os.path.join(settings.BASE_DIR, 'AllCards.json'),'r',encoding='utf8')
         cards = json.load(f)
         f.close()
         if action == "search":
@@ -511,7 +512,7 @@ def add_json(request):
                             t = t[0]
                         c.types.add(t)
                 #sets
-                f = open('SetList.json','r')
+                f = open(os.path.join(settings.BASE_DIR, 'SetList.json'),'r')
                 sets = json.load(f)
                 f.close()
                 if "printings" in cards[name]:

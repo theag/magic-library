@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-
+from django.conf import settings
 from .models import Deck, DeckCard
 from cards.models import Card, Set, Type
 
@@ -31,7 +31,7 @@ def add(request):
                     if len(c) == 0:
                         #try json
                         if cards is None:
-                            f = open('AllCards.json','r',encoding='utf8')
+                            f = open(os.path.join(settings.BASE_DIR, 'AllCards.json'),'r',encoding='utf8')
                             cards = json.load(f)
                             f.close()
                         if m.groups()[1] in cards:
@@ -79,7 +79,7 @@ def add(request):
                                         t = t[0]
                                     c.types.add(t)
                             #sets
-                            f = open('SetList.json','r')
+                            f = open(os.path.join(settings.BASE_DIR, 'SetList.json'),'r')
                             sets = json.load(f)
                             f.close()
                             if "printings" in cards[m.groups()[1]]:
@@ -137,10 +137,10 @@ def detail(request, deck_id):
             else:
                 request.session['show_only_missing'] = False
         elif action == 'sets':
-            f = open('SetList.json','r')
+            f = open(os.path.join(settings.BASE_DIR, 'SetList.json'),'r')
             sets = json.load(f)
             f.close()
-            f = open('AllCards.json','r',encoding='utf8')
+            f = open(os.path.join(settings.BASE_DIR, 'AllCards.json'),'r',encoding='utf8')
             cards = json.load(f)
             f.close()
             for dc in Deck.objects.get(pk=deck_id).deckcard_set.all():
