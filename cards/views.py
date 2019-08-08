@@ -462,7 +462,10 @@ def edit(request, card_id):
         print("key error: {}".format(detail))
     context['card'] = c
     context['decks'] = DeckCard.objects.filter(card=c).order_by('deck__name')
-    return render(request, 'cards/edit.html', context)
+    if mobile(request):
+        return render(request, 'cards/m_edit.html', context)
+    else:
+        return render(request, 'cards/edit.html', context)
 
 def add_json(request):
     context = {"decks":Deck.objects.all().order_by("name")}

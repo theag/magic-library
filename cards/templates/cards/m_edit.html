@@ -1,0 +1,409 @@
+{% load static %}
+<head>
+    <title>Magic Library - Cards</title>
+    <link href="{% static 'm_styles.css' %}" type="text/css" rel="stylesheet"></link>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script>
+        function showEditMana() {
+            {% if card.manaCost == '' %}
+            document.getElementById("chkBlank").checked = true;
+            blankChange();
+            {% else %}
+            var manaTotal = 0;
+            {% for mc in card.manaArr %}
+                {% if mc|first in 'WUBRG' %}
+                    {% if mc|length == 1 %}
+                    addManaRow('{{ mc|first}}',0,'');
+                    {% elif mc|last == 'P' %}
+                    addManaRow('{{ mc|first}}',2,'');
+                    {% else %} {# hybrid #}
+                    addManaRow('{{ mc|first}}',1,'{{ mc|last }}');
+                    {% endif %}
+                {% elif mc == 'X' %}
+                manaTotal += 1;
+                document.getElementById("chkX").checked = true;
+                {% else %}
+                manaTotal += {{ mc }};
+                {% endif %}
+            {% endfor %}
+            document.getElementById("numManaCount").value = manaTotal;
+            {% endif %}
+            document.getElementById("editMana").style.display = "block";
+        }
+        
+        function hideEditMana() {
+            document.getElementById("editMana").style.display = "";
+            var tbl = document.getElementById("tblMana");
+            while(tbl.childElementCount > 1) {
+                tbl.removeChild(tbl.lastElementChild);
+            }
+            manaRowCount = 0;
+        }
+        
+        function manaUpdate() {
+            var manaString = "";
+            if(!document.getElementById("chkBlank").checked) {
+                var manaCount = Number(document.getElementById("numManaCount").value);
+                if(manaCount > 0) {
+                    if(document.getElementById("chkX").checked) {
+                        for(var i = 0; i < manaCount; i++) {
+                            if(i > 0) manaString += ",";
+                            manaString += "X";
+                        }
+                    } else {
+                        manaString += manaCount;
+                    }
+                }
+                for(var i = 1; i <= manaRowCount; i++) {
+                    if(document.getElementById("tr" +i)) {
+                        if(manaString.length > 0) {
+                            manaString += ",";
+                        }
+                        manaString += document.getElementById("hdn1" +i).value;
+                        if(document.getElementById("sel" +i).selectedIndex == 1) {
+                            manaString += document.getElementById("hdn2" +i).value;
+                        } else if(document.getElementById("sel" +i).selectedIndex == 2) {
+                            manaString += "P";
+                        }
+                    }
+                }
+                if(manaString.length == 0) {
+                    manaString += manaCount;
+                }
+            }
+            console.log(manaString);
+            document.getElementById("hdnMana").value = manaString;
+            document.getElementById("hdnAction").value = "update";
+            document.getElementById("frmMain").submit();
+        }
+        
+        function blankChange() {
+            var isBlank = document.getElementById("chkBlank").checked;
+            document.getElementById("numManaCount").disabled = isBlank;
+            document.getElementById("chkX").disabled = isBlank;
+            document.getElementById("btnAddManaRow").disabled = isBlank;
+            if(isBlank) {
+                var tbl = document.getElementById("tblMana");
+                while(tbl.childElementCount > 1) {
+                    tbl.removeChild(tbl.lastElementChild);
+                }
+                manaRowCount = 0;
+            }
+        }
+        
+        var manaRowCount = 0;
+        function addManaRow(c1,t,c2) {
+            manaRowCount += 1;
+            var tr = document.createElement("TR");
+            tr.id = "tr" +manaRowCount;
+            var td = document.createElement("TD");
+            td.style.textAlign = "center";
+            var img = document.createElement("IMG");
+            img.id = "img1" +manaRowCount;
+            switch(c1) {
+                case "W":
+                    img.src = "{% static 'white.png' %}";
+                    break;
+                case "U":
+                    img.src = "{% static 'blue.png' %}";
+                    break;
+                case "B":
+                    img.src = "{% static 'black.png' %}";
+                    break;
+                case "R":
+                    img.src = "{% static 'red.png' %}";
+                    break;
+                case "G":
+                    img.src = "{% static 'green.png' %}";
+                    break;
+            }
+            img.setAttribute('onclick',"updateImage(1," +manaRowCount +")");
+            td.appendChild(img);
+            var hdn = document.createElement("INPUT");
+            hdn.id = "hdn1" +manaRowCount;
+            hdn.type = "hidden";
+            hdn.value = c1;
+            td.appendChild(hdn);
+            tr.appendChild(td);
+            
+            td = document.createElement("TD");
+            var sel = document.createElement("SELECT");
+            sel.id = "sel" +manaRowCount;
+            sel.setAttribute("onchange","updateRow(" +manaRowCount +")");
+            var opt = document.createElement("OPTION");
+            opt.value = "0";
+            opt.appendChild(document.createTextNode("Normal"));
+            sel.appendChild(opt);
+            opt = document.createElement("OPTION");
+            opt.value = "1";
+            opt.appendChild(document.createTextNode("Hybrid"));
+            if(t == 1) opt.selected = true;
+            sel.appendChild(opt);
+            opt = document.createElement("OPTION");
+            opt.value = "2";
+            opt.appendChild(document.createTextNode("Phyrexian"));
+            if(t == 2) opt.selected = true;
+            sel.appendChild(opt);
+            td.appendChild(sel);
+            tr.appendChild(td);
+            
+            td = document.createElement("TD");
+            td.style.textAlign = "center";
+            img = document.createElement("IMG");
+            img.id = "img2" +manaRowCount;
+            switch(c2) {
+                case "W":
+                    img.src = "{% static 'white.png' %}";
+                    break;
+                case "U":
+                    img.src = "{% static 'blue.png' %}";
+                    break;
+                case "B":
+                    img.src = "{% static 'black.png' %}";
+                    break;
+                case "R":
+                    img.src = "{% static 'red.png' %}";
+                    break;
+                case "G":
+                    img.src = "{% static 'green.png' %}";
+                    break;
+                default:
+                    img.src = "{% static 'gray.png' %}";
+                    break;
+            }
+            img.setAttribute('onclick',"updateImage(2," +manaRowCount +")");
+            td.appendChild(img);
+            hdn = document.createElement("INPUT");
+            hdn.id = "hdn2" +manaRowCount;
+            hdn.type = "hidden";
+            hdn.value = c2;
+            td.appendChild(hdn);
+            tr.appendChild(td);
+            
+            td = document.createElement("TD");
+            var btn = document.createElement("INPUT");
+            btn.type = "button";
+            btn.value = "Delete";
+            btn.setAttribute('onclick',"deleteManaRow(" +manaRowCount +")");
+            td.appendChild(btn);
+            tr.appendChild(td);
+            
+            document.getElementById("tblMana").appendChild(tr);
+        }
+        
+        function updateImage(imageNumber, manaRow) {
+            var imageColour = document.getElementById("hdn" +imageNumber +manaRow);
+            switch(imageColour.value) {
+                case "W":
+                    imageColour.value = "U";
+                    document.getElementById("img" +imageNumber +manaRow).src = "{% static 'blue.png' %}";
+                break;
+                case "U":
+                    imageColour.value = "B";
+                    document.getElementById("img" +imageNumber +manaRow).src = "{% static 'black.png' %}";
+                break;
+                case "B":
+                    imageColour.value = "R";
+                    document.getElementById("img" +imageNumber +manaRow).src = "{% static 'red.png' %}";
+                break;
+                case "R":
+                    imageColour.value = "G";
+                    document.getElementById("img" +imageNumber +manaRow).src = "{% static 'green.png' %}";
+                break;
+                case "G":
+                    imageColour.value = "W";
+                    document.getElementById("img" +imageNumber +manaRow).src = "{% static 'white.png' %}";
+                break;
+            }
+        }
+        
+        function updateRow(manaRow) {
+            var value = document.getElementById("sel"+manaRow).selectedIndex;
+            var imageColour2 = document.getElementById("hdn2" +manaRow);
+            switch(value) {
+                case 0:
+                case 2:
+                    if(imageColour2.value != "") {
+                        imageColour2.value = "";
+                        document.getElementById("img2" +manaRow).src = "{% static 'gray.png' %}";
+                    }
+                    break;
+                case 1:
+                    imageColour2.value = "W";
+                    document.getElementById("img2" +manaRow).src = "{% static 'white.png' %}";
+                    break;
+            }
+        }
+        
+        function deleteManaRow(manaRow) {
+            document.getElementById("tblMana").removeChild(document.getElementById("tr" +manaRow));
+        }
+        
+        function updateSets() {
+            document.getElementById("pleaseWait").style.display = "block";
+            document.getElementById("hdnAction").value = "sets";
+            document.getElementById("frmMain").submit();
+        }
+        
+        function deleteCard() {
+            if(confirm("Are you sure you wish to delete this card? This can't be undone.")) {
+                document.getElementById("hdnAction").value = "delete";
+                document.getElementById("frmMain").submit();
+            }
+        }
+        
+        function removeFromDeck() {
+            var sel = document.getElementById("selDeck");
+            if(sel.selectedIndex >= 0) {
+                document.getElementById("hdnAction").value = "remove";
+                document.getElementById("frmMain").submit();
+            }
+        }
+        
+        function addToDeck() {
+            document.getElementById("addToDeck").style.display = "block";
+        }
+        
+        function doDeckAdd() {
+            document.getElementById("hdnAction").value = "deckadd";
+            document.getElementById("frmMain").submit();
+        }
+    </script>
+</head>
+<body>
+    {% include "cards/m_top_bar.html" %}
+    {% if errors %}
+    <div style="color:red">
+        Cannot save card due to the following errors
+        <ul>
+            {% for err in errors %}
+            <li>{{ err }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+    {% if mode == 'add' %}
+    <form id="frmMain" action="{% url 'cards:add' %}" method="post">
+    {% else %}
+    <form id="frmMain" action="{% url 'cards:edit' card.id %}" method="post">
+    {% endif %}
+        {% csrf_token %}
+        <input type="hidden" name="action" id="hdnAction" value="{{ mode }}" />
+        <table>
+            <tr>
+                <td colspan="2"><input name="name" type="text" value="{{ card.name }}" style="width:100%" /></td>
+                <td colspan="2" style="text-align:right">
+                    <span onclick="showEditMana()" class="clickable">
+                        <input type="hidden" id="hdnMana" name="manaCost" value="{{ card.manaCost }}" />
+                        {% include "cards/mana_view.html" with mana=card.manaArr %}
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <td><input type="text" name="super_type" value="{% if super_type %}{{ super_type }}{% elif card.id %}{{ card.super_types }}{% endif %}" /></td>
+                <td><input type="text" name="regular_type" value="{% if regular_type %}{{ regular_type }}{% elif card.id %}{{ card.regular_types }}{% endif %}" /></td>
+                <td>&mdash;</td>
+                <td><input type="text" name="sub_type" value="{% if sub_type %}{{ sub_type }}{% elif card.id %}{{ card.sub_types }}{% endif %}" /></td>
+            </tr>
+            <tr>
+                <td colspan="4"><textarea style="width:100%" name="text" rows="5">{{ card.text }}</textarea></td>
+            </tr>
+            <tr>
+                <td colspan="4" style="text-align:right"><input type="text" name="plt" style="width:50px" value="{{ card.plt }}" /></td>
+            </tr>
+        </table>
+        <div>
+            <input type="number" name="count" style="width:50px" min="0" value="{{ card.count }}" />
+            <label style="margin-left:50px"><input type="checkbox" name="add_mana" {% if card.addMana %}checked{% endif %} />Adds Mana</label>
+        </div>
+        {% if card.id %}
+        <div style="margin-top:10px">Last Updated: {{ card.lastUpdated }}</div>
+        {% endif %}
+        <div style="margin-top:10px; clear:both">
+            <div>Decks</div>
+            <select name="deck" id="selDeck" style="width:225px; float:left" size="5">
+            {% for dc in decks %}
+                <option value="{{dc.id}}">{{dc.deck.name}} ({{dc.count}}){% if dc.commander %} (C){% endif %}{% if dc.sideboard_count > 0 %} (S-{{dc.sideboard_count}}){% endif %}</option>
+            {% endfor %}
+            </select>
+            <div style="float:left; margin-left:10px">
+                <div><input type="button" onclick="addToDeck()" value="Add to Deck" /></div>
+                <div style="margin-top:10px"><input type="button" onclick="removeFromDeck()" value="Remove from Deck" /></div>
+            </div>
+        </div>
+        <div style="margin-top:10px; clear:both">
+            <div>Notes</div>
+            <textarea rows="5" cols="50" name="notes">{{ card.notes }}</textarea>
+        </div>
+        {% if mode == 'edit' %}
+        <div style="margin-top:10px">
+            <div>Sets ({{ card.name }})</div>
+            <div><textarea rows="5" cols="50" readonly>{{ card.print_sets }}</textarea></div>
+            <div style="margin-top:5px"><input type="button" value="Update Sets from JSON" onclick="updateSets()" /></div>
+        </div>
+        {% endif %}
+        <div style="margin-top:10px">
+            <input type="submit" value="{% if mode == 'add' %}Add{% else %}Save{% endif %}" />
+            {% if mode == 'edit' %}<input type="button" value="Delete" onclick="deleteCard()" />{% endif %}
+            <input type="button" value="Cancel" onclick="window.location.href='{% url 'cards:index' %}'" />
+        </div>
+        <div id="editMana" class="gray">
+            <div class="popup">
+                <div>Edit Mana</div>
+                <div>
+                    <label><input type="checkbox" id="chkBlank" onclick="blankChange()" />Is Blank</label>
+                </div>
+                <div>
+                    <input type="number" id="numManaCount" min="0" value="0" style="width:50px" />
+                    <label><input type="checkbox" id="chkX" />Is X</label>
+                </div>
+                <div>
+                    <table id="tblMana" style="float:left">
+                        <tr>
+                            <th>Colour</th>
+                            <th>Type</th>
+                            <th>Second Colour</th>
+                        </tr>
+                    </table>
+                    <div style="float:left"><input type="button" id="btnAddManaRow" value="Add" onclick="addManaRow('W',0,'')" /></div>
+                    <div style="clear:both"></div>
+                </div>
+                <div>
+                    <input type="button" value="Update" onclick="manaUpdate()" />
+                    <input type="button" value="Cancel" onclick="hideEditMana()" />
+                </div>
+            </div>
+        </div>
+        <div id="addToDeck" class="gray">
+            <div class="popup">
+                <div>Add to Deck</div>
+                <div>
+                    Deck:
+                    <select name="newdeck">
+                        {% for d in all_decks %}
+                        <option value="{{d.id}}">{{d.name}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    Count:
+                    <input type="number" name="deck_count" value="1" min="1" style="width:50px" />
+                </div>
+                <div>
+                    Sideboard:
+                    <input type="number" name="sideboard_count" value="1" min="1" style="width:50px" />
+                </div>
+                <div>
+                    <label>Commander: <input type="checkbox" name="commander" /></label>
+                </div>
+                <div>
+                    <input type="button" onclick="doDeckAdd()" value="OK" />
+                    <input type="button" onclick="document.getElementById('addToDeck').style.display='';" value="Cancel" />
+                </div>
+            </div>
+        </div>
+        <div id="pleaseWait" class="gray">
+            <div class="pleaseWait">Please Wait</div>
+        </div>
+    </form>
+</body>
