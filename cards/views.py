@@ -170,7 +170,7 @@ def mobile(request):
     if MOBILE_AGENT_RE.match(request.META['HTTP_USER_AGENT']):
         return True
     else:
-        return False
+        return True
         
 # Create your views here.
 def index(request):
@@ -471,20 +471,19 @@ def edit(request, card_id):
         return render(request, 'cards/edit.html', context)
 
 def add_json(request):
-    context = {"decks":Deck.objects.all().order_by("name")}
+    context = {"decks":Deck.objects.all().order_by("name"),"deck_choices":[]}
     try:
         action = request.POST['action']
         f = open(os.path.join(settings.BASE_DIR, 'AllCards.json'),'r',encoding='utf8')
         cards = json.load(f)
         f.close()
         if action == "search":
-            print(request.POST.getlist('deck_choices'))
-            context = {"results":[],"name":request.POST["name"],"notes":request.POST["notes"],"decks":Deck.objects.all().order_by("name"),"deck_choices":map(int,request.POST.getlist('deck_choices'))}
+            context = {"results":[],"name":request.POST["name"],"notes":request.POST["notes"],"decks":Deck.objects.all().order_by("name"),"deck_choices":json.loads(request.POST['deck_choices'])}
             for name in cards.keys():
                 if name.lower().startswith(request.POST["name"].lower()):
                     context["results"].append(name)
         elif action == "add" or action == "addp":
-            for name in request.POST.getlist('cards'):
+            for name in json.loads(request.POST['cards']):
                 c = Card(name=name,
                     text=cards[name]['text'],
                     notes=request.POST['notes'],
@@ -546,13 +545,13 @@ def add_json(request):
                                     set.cards.add(c)
                                 break
                 #decks
-                for d_id in request.POST.getlist('deck_choices'):
+                for d_id in json.loads(request.POST['deck_choices']):
                     dc = DeckCard(card=c,count=1,deck=Deck.objects.get(pk=int(d_id)))
                     dc.save()
             if action == "add":
                 return redirect('/cards/')
             else:
-                context = {"results":[],"notes":request.POST["notes"],"decks":Deck.objects.all().order_by("name"),"deck_choices":map(int,request.POST.getlist('deck_choices'))}
+                context = {"results":[],"notes":request.POST["notes"],"decks":Deck.objects.all().order_by("name"),"deck_choices":json.loads(request.POST['deck_choices'])}
     except KeyError as detail:
         print("key error: {}".format(detail))
     if mobile(request):

@@ -13,6 +13,7 @@ body {
     overflow: hidden;
     width: 100%;
     vertical-align: center;
+    cursor: default;
 }
 
 .horizontal_nav_bar_spacer {

@@ -1,0 +1,71 @@
+{% load static %}
+{% load cards_extras %}
+{% if mana.0 == "" %}
+&mdash;
+{% else %}
+<div class="mana">
+{% for mc in mana %}
+    {% if mc|first == 'W' %}
+        {% if mc|length == 1 %}
+        <img src="{% static 'white.png' %}" />
+        {% elif mc|last == 'P' %}
+        <img src="{% static 'p_white.png' %}" />
+        {% else %} {# hybrid #}
+        <div style="position:relative; display:inline-block">
+            <img src="{% static 'white.png' %}" />
+            <img src="{% static mc|last|hybrid_png %}" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);" />
+        </div>
+        {% endif %}
+    {% elif mc|first == 'U' %}
+        {% if mc|length == 1 %}
+        <img src="{% static 'blue.png' %}" />
+        {% elif mc|last == 'P' %}
+        <img src="{% static 'p_blue.png' %}" />
+        {% else %} {# hybrid #}
+        <div style="position:relative; display:inline-block">
+            <img src="{% static 'blue.png' %}" />
+            <img src="{% static mc|last|hybrid_png %}" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);" />
+        </div>
+        {% endif %}
+    {% elif mc|first == 'B' %}
+        {% if mc|length == 1 %}
+        <img src="{% static 'black.png' %}" />
+        {% elif mc|last == 'P' %}
+        <img src="{% static 'p_black.png' %}" />
+        {% else %} {# hybrid #}
+        <div style="position:relative; display:inline-block">
+            <img src="{% static 'black.png' %}" />
+            <img src="{% static mc|last|hybrid_png %}" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);" />
+        </div>
+        {% endif %}
+    {% elif mc|first == 'R' %}
+        {% if mc|length == 1 %}
+        <img src="{% static 'red.png' %}" />
+        {% elif mc|last == 'P' %}
+        <img src="{% static 'p_red.png' %}" />
+        {% else %} {# hybrid #}
+        <div style="position:relative; display:inline-block">
+            <img src="{% static 'red.png' %}" />
+            <img src="{% static mc|last|hybrid_png %}" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);" />
+        </div>
+        {% endif %}
+    {% elif mc|first == 'G' %}
+        {% if mc|length == 1 %}
+        <img src="{% static 'green.png' %}" />
+        {% elif mc|last == 'P' %}
+        <img src="{% static 'p_green.png' %}" />
+        {% else %} {# hybrid #}
+        <div style="position:relative; display:inline-block">
+            <img src="{% static 'green.png' %}" />
+            <img src="{% static mc|last|hybrid_png %}" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);" />
+        </div>
+        {% endif %}
+    {% else %}
+    <div style="position:relative; display:inline-block">
+        <img src="{% static 'gray.png' %}" />
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">{{ mc }}</div>
+    </div>
+    {% endif %}
+{% endfor %}
+</div>
+{% endif %}
