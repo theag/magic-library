@@ -7,7 +7,7 @@
         .addBorder {
             border-collapse: collapse;
         }
-        
+
         .addBorder, .addBorder td, .addBorder th {
             border: 1px solid black;
         }
@@ -25,11 +25,11 @@
         <form id="frmMain" action="{% url 'decks:edit_card' deck_card.id %}" method="post">
             {% csrf_token %}
             <input type="hidden" name="action" id="hdnAction" value="" />
-            <div style="width:500px; font-size:24px">
-                <div style="float:left">{{deck_card.card.name}}</div>
-                <div style="float:right">{% include "cards/m_mana_view.html" with mana=deck_card.card.manaArr %}</div>
-                <div style="clear:both">{{deck_card.card.supertypes}} {{deck_card.card.regular_types}}{% if deck_card.card.sub_types %} &mdash; {{deck_card.card.sub_types}}{% endif %}</div>
-                <div style="margin-top:10px">{% autoescape off %}{{deck_card.card.html_text}}{% endautoescape %}</div>
+            <div>
+                <div style="float:left; font-size:36px">{{deck_card.card.name}}</div>
+                <div style="float:right; font-size:36px">{% include "cards/m_mana_view.html" with mana=deck_card.card.manaArr %}</div>
+                <div style="clear:both; font-size:36px">{{deck_card.card.supertypes}} {{deck_card.card.regular_types}}{% if deck_card.card.sub_types %} &mdash; {{deck_card.card.sub_types}}{% endif %}</div>
+                <div style="margin-top:10px; font-size:36px">{% autoescape off %}{{deck_card.card.html_text}}{% endautoescape %}</div>
                 <hr/>
             </div>
             <div>
@@ -50,7 +50,7 @@
             </div>
             <div style="margin-top:10px">
                 <div style="font-weight:bold">Notes</div>
-                <textarea rows="5" cols="50" name="notes">{{ deck_card.card.notes }}</textarea>
+                <textarea rows="5" style="width:100%" name="notes">{{ deck_card.card.notes }}</textarea>
             </div>
             <div style="margin-top:10px">
                 <div style="font-weight:bold">Sets</div>
