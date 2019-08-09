@@ -30,7 +30,7 @@
             {% endif %}
             document.getElementById("editMana").style.display = "block";
         }
-        
+
         function hideEditMana() {
             document.getElementById("editMana").style.display = "";
             var tbl = document.getElementById("tblMana");
@@ -39,7 +39,7 @@
             }
             manaRowCount = 0;
         }
-        
+
         function manaUpdate() {
             var manaString = "";
             if(!document.getElementById("chkBlank").checked) {
@@ -75,7 +75,7 @@
             document.getElementById("hdnAction").value = "update";
             document.getElementById("frmMain").submit();
         }
-        
+
         function blankChange() {
             var isBlank = document.getElementById("chkBlank").checked;
             document.getElementById("numManaCount").disabled = isBlank;
@@ -89,7 +89,7 @@
                 manaRowCount = 0;
             }
         }
-        
+
         var manaRowCount = 0;
         function addManaRow(c1,t,c2) {
             manaRowCount += 1;
@@ -124,7 +124,7 @@
             hdn.value = c1;
             td.appendChild(hdn);
             tr.appendChild(td);
-            
+
             td = document.createElement("TD");
             var sel = document.createElement("DIV");
             sel.id = "sel" +manaRowCount;
@@ -171,7 +171,7 @@
             sel.appendChild(div);
             td.appendChild(sel);
             tr.appendChild(td);
-            
+
             td = document.createElement("TD");
             td.style.textAlign = "center";
             img = document.createElement("IMG");
@@ -204,7 +204,7 @@
             hdn.value = c2;
             td.appendChild(hdn);
             tr.appendChild(td);
-            
+
             td = document.createElement("TD");
             var btn = document.createElement("I");
             btn.className = "material-icons coloured md-36";
@@ -212,10 +212,10 @@
             btn.setAttribute('onclick',"deleteManaRow(" +manaRowCount +")");
             td.appendChild(btn);
             tr.appendChild(td);
-            
+
             document.getElementById("tblMana").appendChild(tr);
         }
-        
+
         function updateImage(imageNumber, manaRow) {
             var imageColour = document.getElementById("hdn" +imageNumber +manaRow);
             switch(imageColour.value) {
@@ -241,7 +241,7 @@
                 break;
             }
         }
-        
+
         function updateRow(manaRow, value) {
             var imageColour2 = document.getElementById("hdn2" +manaRow);
             switch(value) {
@@ -264,24 +264,24 @@
                     break;
             }
         }
-        
+
         function deleteManaRow(manaRow) {
             document.getElementById("tblMana").removeChild(document.getElementById("tr" +manaRow));
         }
-        
+
         function updateSets() {
             document.getElementById("pleaseWait").style.display = "block";
             document.getElementById("hdnAction").value = "sets";
             document.getElementById("frmMain").submit();
         }
-        
+
         function deleteCard() {
             if(confirm("Are you sure you wish to delete this card? This can't be undone.")) {
                 document.getElementById("hdnAction").value = "delete";
                 document.getElementById("frmMain").submit();
             }
         }
-        
+
         function removeFromDeck() {
             var sel = document.getElementById("hdnDeck");
             if(sel.value != "") {
@@ -289,16 +289,16 @@
                 document.getElementById("frmMain").submit();
             }
         }
-        
+
         function addToDeck() {
             document.getElementById("addToDeck").style.display = "block";
         }
-        
+
         function doDeckAdd() {
             document.getElementById("hdnAction").value = "deckadd";
             document.getElementById("frmMain").submit();
         }
-        
+
         function updateDeck(deck_id) {
             var old = document.querySelector("#selDeck li.selected");
             if(old) {
@@ -309,7 +309,7 @@
                 document.getElementById("hdnDeck").value = deck_id;
             }
         }
-        
+
         function showMenu(id) {
             var menu = document.querySelector("#" +id +" .menu");
             if(menu.style.display == "") {
@@ -322,7 +322,7 @@
                 document.querySelector("#" +id +" > div:first-child").className = "";
             }
         }
-        
+
         function selectMenuItem(id, value, name) {
             document.querySelector("#" +id +" .menu").style.display = "";
             document.querySelector("#" +id +" i").innerText = "arrow_drop_down";
@@ -352,14 +352,14 @@
         {% csrf_token %}
         <input type="hidden" name="action" id="hdnAction" value="{{ mode }}" />
         <div style="margin-top:10px"><input name="name" type="text" value="{{ card.name }}" placeholder="Name" style="width:100%" /></div>
-        <div style="margin-top:10px" onclick="showEditMana()" class="clickable">
+        <div style="margin-top:10px; text-align:right" onclick="showEditMana()" class="clickable">
             <input type="hidden" id="hdnMana" name="manaCost" value="{{ card.manaCost }}" />
             {% include "cards/m_mana_view.html" with mana=card.manaArr %}
         </div>
         <div style="margin-top:10px"><input type="text" name="super_type" value="{% if super_type %}{{ super_type }}{% elif card.id %}{{ card.super_types }}{% endif %}" placeholder="Supertype" style="width:100%" /></div>
         <div style="margin-top:10px"><input type="text" name="regular_type" value="{% if regular_type %}{{ regular_type }}{% elif card.id %}{{ card.regular_types }}{% endif %}" placeholder="Type" style="width:100%" /></div>
         <div style="margin-top:10px"><input type="text" name="sub_type" value="{% if sub_type %}{{ sub_type }}{% elif card.id %}{{ card.sub_types }}{% endif %}" placeholder="Subtype" style="width:100%" /></div>
-        <div style="margin-top:10px"><textarea style="width:100%" name="text" rows="5">{{ card.text }}</textarea></div>
+        <div style="margin-top:10px"><textarea name="text" rows="5" style="width:100%">{{ card.text }}</textarea></div>
         <div style="text-align:right; margin-top:10px"><input type="text" name="plt" style="width:100px" value="{{ card.plt }}" placeholder="PTL" /></div>
         <div>
             <input type="number" name="count" style="width:100px" min="0" value="{{ card.count }}" />
@@ -384,16 +384,16 @@
         </div>
         <div style="margin-top:10px; clear:both">
             <div>Notes</div>
-            <textarea rows="5" cols="50" name="notes">{{ card.notes }}</textarea>
+            <textarea rows="5" style="width:100%" name="notes">{{ card.notes }}</textarea>
         </div>
         {% if mode == 'edit' %}
         <div style="margin-top:10px">
             <div>Sets ({{ card.name }})</div>
-            <div><textarea rows="5" cols="50" readonly>{{ card.print_sets }}</textarea></div>
+            <div><textarea rows="5" style="width:100%" readonly>{{ card.print_sets }}</textarea></div>
             <div style="margin-top:5px"><input type="button" value="Update Sets from JSON" onclick="updateSets()" /></div>
         </div>
         {% endif %}
-        <div style="margin-top:10px">
+        <div style="margin-top:20px">
             <input type="submit" value="{% if mode == 'add' %}Add{% else %}Save{% endif %}" />
             {% if mode == 'edit' %}<input type="button" value="Delete" onclick="deleteCard()" />{% endif %}
             <input type="button" value="Cancel" onclick="window.location.href='{% url 'cards:index' %}'" />

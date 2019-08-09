@@ -29,7 +29,7 @@ class AdvancedSearch:
     setsAnd = True
     sets = []
     noSets = False
-    
+
     def matches(self, card):
         results = []
         #colour
@@ -163,7 +163,7 @@ class AdvancedSearch:
                 rv = rv or r
         return rv
 
-        
+
 def mobile(request):
     MOBILE_AGENT_RE = re.compile(r".*(iphone|mobile|androidtouch)", re.IGNORECASE)
 
@@ -171,7 +171,7 @@ def mobile(request):
         return True
     else:
         return False
-        
+
 # Create your views here.
 def index(request):
     context = None
@@ -479,9 +479,10 @@ def add_json(request):
         f.close()
         if action == "search":
             context = {"results":[],"name":request.POST["name"],"notes":request.POST["notes"],"decks":Deck.objects.all().order_by("name"),"deck_choices":json.loads(request.POST['deck_choices'])}
-            for name in cards.keys():
-                if name.lower().startswith(request.POST["name"].lower()):
-                    context["results"].append(name)
+            if len(request.POST["name"]) > 0:
+                for name in cards.keys():
+                    if name.lower().startswith(request.POST["name"].lower()):
+                        context["results"].append(name)
         elif action == "add" or action == "addp":
             for name in json.loads(request.POST['cards']):
                 c = Card(name=name,
@@ -557,4 +558,4 @@ def add_json(request):
     if mobile(request):
         return render(request, 'cards/m_add_json.html', context)
     else:
-        return render(request, 'cards/add_json.html', context)    
+        return render(request, 'cards/add_json.html', context)

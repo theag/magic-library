@@ -8,7 +8,7 @@
             document.getElementById("hdnAction").value = action;
             document.getElementById("frmMain").submit();
         }
-        
+
         function updateList(id, value) {
             var hdn = document.getElementById("hdn" +id);
             var lst = JSON.parse(hdn.value);
@@ -31,7 +31,7 @@
             {% csrf_token %}
             <input type="hidden" name="action" id="hdnAction" value="search" />
             <div>
-                <input type="text" id="txtName" name="name" value="{{ name }}" />
+                <input type="search" id="txtName" name="name" value="{{ name }}" />
                 <input type="submit" value="Search" />
             </div>
             <div style="margin-top:10px; width:500px;">
