@@ -1,0 +1,65 @@
+{% load static %}
+<head>
+    <title>Magic Library - Decks</title>
+    <link href="{% static 'm_styles.css' %}" type="text/css" rel="stylesheet"></link>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        .addBorder {
+            border-collapse: collapse;
+        }
+        
+        .addBorder, .addBorder td, .addBorder th {
+            border: 1px solid black;
+        }
+    </style>
+    <script>
+        function doSubmit(action) {
+            document.getElementById("hdnAction").value = action;
+            document.getElementById("frmMain").submit();
+        }
+    </script>
+</head>
+<body>
+    {% include "decks/m_top_bar.html" with deck_list=decks %}
+    <div style="margin-top:10px">
+        <form id="frmMain" action="{% url 'decks:edit_card' deck_card.id %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="action" id="hdnAction" value="" />
+            <div style="width:500px">
+                <div style="float:left">{{deck_card.card.name}}</div>
+                <div style="float:right">{% include "cards/mana_view.html" with mana=deck_card.card.manaArr %}</div>
+                <div style="clear:both">{{deck_card.card.supertypes}} {{deck_card.card.regular_types}}{% if deck_card.card.sub_types %} &mdash; {{deck_card.card.sub_types}}{% endif %}</div>
+                <div style="margin-top:10px">{% autoescape off %}{{deck_card.card.html_text}}{% endautoescape %}</div>
+                <hr/>
+            </div>
+            <div>
+                <input type="number" name="count" style="width:100px" min="0" value="{{ deck_card.card.count }}" />
+                <input id="chk1" type="checkbox" name="add_mana" {% if deck_card.card.addMana %}checked{% endif %} /><label for="chk1">Adds Mana</label>
+            </div>
+            <div style="margin-top:10px">Last Updated: {{ deck_card.card.lastUpdated }}</div>
+            <div style="margin-top:10px">
+                <div style="font-weight:bold">Decks</div>
+                {% for oc in other_cards %}
+                    <div>
+                        {{oc.deck.name}}
+                        {% if oc.id == deck_card.id %}
+                        (Count <input type="number" name="deck_count" value="{{oc.count}}" min="0" style="width:100px" />, Sideboard <input type="number" name="sideboard_count" value="{{oc.sideboard_count}}" min="0" style="width:100px" />, <label for="chk2">Commander</label><input id="chk2" type="checkbox" name="commander" {% if oc.commander %}checked{% endif %}/><label for="chk2" class="small"></label>)
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+            <div style="margin-top:10px">
+                <div style="font-weight:bold">Notes</div>
+                <textarea rows="5" cols="50" name="notes">{{ deck_card.card.notes }}</textarea>
+            </div>
+            <div style="margin-top:10px">
+                <div style="font-weight:bold">Sets</div>
+                <div>{{deck_card.card.print_sets}}</div>
+            </div>
+            <div style="margin-top:10px">
+                <input type="button" onclick="doSubmit('save')" value="Save" />
+                <input type="button" onclick="window.location.href='{% url 'decks:deck' deck_card.deck.id %}';" value="Cancel" />
+            </div>
+        </form>
+    </div>
+</body>

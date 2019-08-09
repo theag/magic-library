@@ -1,0 +1,40 @@
+{% load static %}
+<head>
+    <title>Magic Library - Decks</title>
+    <link href="{% static 'm_styles.css' %}" type="text/css" rel="stylesheet"></link>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        .addBorder {
+            border-collapse: collapse;
+        }
+        
+        .addBorder, .addBorder td, .addBorder th {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    {% include "decks/m_top_bar.html" with deck_list=decks %}
+    <div style="margin-top:10px; float:left">
+        <form id="frmMain" action="{% url 'decks:add' %}" method="post">
+            {% csrf_token %}
+            <div>Deck Name</div>
+            <div style="margin-top:10px"><input type="text" name="name" /></div>
+            <div style="margin-top:10px">Deck List</div>
+            <div style="margin-top:10px"><textarea name="list" cols="25" rows="20"></textarea></div>
+            <div style="margin-top:10px">
+                <input type="submit" value="Save" />
+                <input type="button" value="Cancel" onclick="window.location.href='{% url 'decks:index' %}';" />
+            </div>
+        </form>
+    </div>
+    {% if error %}
+    <div style="margin-top:10px;float:left;text-color:red">{{ error }}</div>
+    {% endif %}
+    {% if saved %}
+    <script>
+        alert("{{ saved }}");
+        window.location.href='{% url 'decks:index' %}';
+    </script>
+    {% endif %}
+</body>

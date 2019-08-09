@@ -12,6 +12,7 @@ body {
 .material-icons.md-24 { font-size: 24px; }
 .material-icons.md-36 { font-size: 36px; }
 .material-icons.md-48 { font-size: 48px; }
+.material-icons.md-72 { font-size: 72px; }
 
 .topnav {
     overflow: hidden;
@@ -19,11 +20,6 @@ body {
     position: relative;
     margin: -8px -8px 0 -8px;
     cursor: default;
-}
-
-.topnav #myLinks {
-  display: none;
-  background-color: #333;
 }
 
 .topnav .title {
@@ -57,21 +53,26 @@ body {
   transition: 0.5s; /* 0.5 second transition effect to slide in or slide down the overlay (height or width, depending on reveal) */
 }
 
-.overlay-content {
-    padding-left: 20px;
+.overlay-menu {
+    display: none;
+    padding-left: 40px;
+}
+
+.overlay-content .selected {
+    background-color: rgb(76,175,80); /* 4CAF50 fallback color */
+    background-color: rgba(76,175,80, 0.95); /* 4CAF50 w/opacity */
 }
 
 .overlay .line {
-    border: 2px solid #818181;
-    margin-right: 20px;
+    border: 2px solid WhiteSmoke;
 }
 
 /* The navigation links inside the overlay */
 .overlay a {
-  padding: 8px;
+  padding: 8px 20px;
   text-decoration: none;
   font-size: 72px;
-  color: #818181;
+  color: WhiteSmoke;
   display: block; /* Display block instead of inline */
 }
 
@@ -105,8 +106,8 @@ body {
 .switch {
   position: relative;
   display: inline-block;
-  width: 30px;
-  height: 17px;
+  width: 60px;
+  height: 34px;
 }
 
 .switch input {
@@ -125,16 +126,16 @@ body {
   background-color: #ccc;
   -webkit-transition: .4s;
   transition: .4s;
-  border-radius: 17px;
+  border-radius: 34px;
 }
 
 .slider:before {
   position: absolute;
   content: "";
-  height: 13px;
-  width: 13px;
-  left: 2px;
-  bottom: 2px;
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
   background-color: white;
   -webkit-transition: .4s;
   transition: .4s;
@@ -142,17 +143,17 @@ body {
 }
 
 input:checked + .slider {
-  background-color: #2196F3;
+  background-color: #4CAF50;
 }
 
 input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
+  box-shadow: 0 0 1px #4CAF50;
 }
 
 input:checked + .slider:before {
-  -webkit-transform: translateX(13px);
-  -ms-transform: translateX(13px);
-  transform: translateX(13px);
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
 }
 
 .search-header {
@@ -171,7 +172,7 @@ input:checked + .slider:before {
     font-weight: bold;
 }
 
-input[type=button], input[type=submit] {
+input[type=button], input[type=submit], a.button_style {
     min-width: 128px;
     height: 72px;
     padding: 0 32px;
@@ -181,6 +182,16 @@ input[type=button], input[type=submit] {
     display: inline-block;
     font-size: 32px;
     border-radius: 16px;
+}
+
+a.button_style {
+    line-height: 72px;
+    padding: 20px 32px;
+    text-decoration: none;
+    border: none;
+    font-size: 32px;
+    border-radius: 16px;
+    text-align: center;
 }
 
 input[type=text], input[type=number], input[type="search"] {
@@ -292,6 +303,11 @@ input[type=checkbox] + label::before {
     color: #4CAF50;
 }
 
+input[type=checkbox] + label.small::before {
+    font-size: 36px;
+}
+
+
 input[type=checkbox]:checked + label::before {
     content: "check_box";
 }
@@ -363,4 +379,33 @@ ul.select > li.selected {
 
 .coloured {
     color: #4CAF50;
+}
+
+.tab {
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
+    margin-left: -8px;
+}
+
+.tab button {
+    background-color: inherit;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: 0.3s;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+    background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+    display: none;
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-top: none;
+    margin-left: -8px;
 }

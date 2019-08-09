@@ -1,0 +1,11 @@
+{% load static %}
+<head>
+    <title>Magic Library</title>
+    <link href="{% static 'm_styles.css' %}"  type="text/css" rel="stylesheet"></link>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+    <h1>Magic Library</h1>
+    <a href="{% url 'cards:index' %}" class="button_style">Cards</a>
+    <a href="{% url 'decks:index' %}" class="button_style">Decks</a>
+</body>

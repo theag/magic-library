@@ -1,0 +1,24 @@
+{% load static %}
+<head>
+    <title>Magic Library - Decks</title>
+    <link href="{% static 'm_styles.css' %}" type="text/css" rel="stylesheet"></link>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        .addBorder {
+            border-collapse: collapse;
+        }
+        
+        .addBorder, .addBorder td, .addBorder th {
+            border: 1px solid black;
+        }
+    </style>
+    <script>
+        function doSubmit(action) {
+            document.getElementById("hdnAction").value = action;
+            document.getElementById("frmMain").submit();
+        }
+    </script>
+</head>
+<body>
+    {% include "decks/m_top_bar.html" with deck_list=decks %}
+</body>

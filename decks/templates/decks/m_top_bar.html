@@ -1,0 +1,46 @@
+<script>
+    /* Open when someone clicks on the span element */
+    function openNav() {
+        document.getElementById("myNav").style.width = "100%";
+    }
+
+    /* Close when someone clicks on the "x" symbol inside the overlay */
+    function closeNav() {
+        document.getElementById("myNav").style.width = "0%";
+    }
+    
+    function showDeckMenu() {
+        var mn = document.getElementById("topmenu");
+        if(mn.className == "") {
+            mn.className = "selected";
+            document.getElementById("deckMenu").style.display = "block";
+            document.querySelector("#topmenu i").innerText = "remove";
+        } else {
+            mn.className = "";
+            document.getElementById("deckMenu").style.display = "";
+            document.querySelector("#topmenu i").innerText = "add";
+        }
+    }
+</script>
+<div class="topnav">
+    <span class="title">Magic Library - Decks</span>
+    <div class="icon" onclick="openNav()"><i class="material-icons md-48">menu</i></div>
+</div>
+<div id="myNav" class="overlay">
+  <!-- Button to close the overlay navigation -->
+  <div class="closebtn"><a href="javascript:void(0)" onclick="closeNav()">&times;</a></div>
+
+  <!-- Overlay content -->
+  <div class="overlay-content">
+    <a href="{% url 'cards:index' %}">Cards</a>
+    <div class="line"></div>
+    <a href="{% url 'decks:add' %}">Add</a>
+    <a id="topmenu" href="javascript:showDeckMenu()">Decks<i class="material-icons md-72" style="float:right">add</i></a>
+    <div id="deckMenu" class="overlay-menu">
+        {% for deck in decks %}
+        <a href="{% url 'decks:deck' deck.id %}">{{ deck.name }}</a>
+        {% endfor %}
+    </div>
+  </div>
+
+</div>

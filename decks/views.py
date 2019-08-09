@@ -18,7 +18,10 @@ def mobile(request):
 # Create your views here.
 def index(request):
     context = {"decks":Deck.objects.all().order_by('name')}
-    return render(request, 'decks/index.html', context)
+    if mobile(request):
+        return render(request, 'decks/m_index.html', context)
+    else:
+        return render(request, 'decks/index.html', context)
 
 def add(request):
     try:
@@ -116,9 +119,15 @@ def add(request):
                 return redirect('/decks/')
         else:
             context['error'] = "Deck must have a name."
-        return render(request, 'decks/add.html', context)
+        if mobile(request):
+            return render(request, 'decks/m_add.html', context)
+        else:
+            return render(request, 'decks/add.html', context)
     except KeyError:
-        return render(request, 'decks/add.html')
+        if mobile(request):
+            return render(request, 'decks/m_add.html', context)
+        else:
+            return render(request, 'decks/add.html', context)
 
 def detail(request, deck_id):
     context = None
@@ -179,7 +188,10 @@ def detail(request, deck_id):
         context["decks"] = Deck.objects.all().order_by('name')
         context["deck"] = Deck.objects.get(pk=deck_id)
     
-    return render(request, 'decks/edit.html', context)
+    if mobile(request):
+        return render(request, 'decks/m_edit.html', context)
+    else:
+        return render(request, 'decks/edit.html', context)
 
 def edit_card(request, deck_card_id):
     context = None
@@ -203,4 +215,7 @@ def edit_card(request, deck_card_id):
     except KeyError:
         context = {"decks":Deck.objects.all().order_by('name'),"deck_card":DeckCard.objects.get(pk=deck_card_id)}
         context["other_cards"] = DeckCard.objects.filter(card=context["deck_card"].card.id)
-    return render(request, 'decks/edit_card.html', context)
+    if mobile(request):
+        return render(request, 'decks/m_edit_card.html', context)
+    else:
+        return render(request, 'decks/edit_card.html', context)
