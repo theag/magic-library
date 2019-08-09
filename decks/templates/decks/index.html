@@ -16,20 +16,47 @@
             document.getElementById("hdnAction").value = action;
             document.getElementById("frmMain").submit();
         }
+        var newRows = 0;
+        var rowCount = 
+        function addRow() {
+            newRows += 1;
+            var tr = document.createElement("TR");
+            var td = document.createElement("TD");
+        }
     </script>
 </head>
 <body>
     <h1>Magic Library - Decks</h1>
     {% include "decks/horizontal_navigation_bar.html" with page_name="index" %}
+    {% if decks %}
     <div class="horizontal_nav_bar_spacer"></div>
     <ul class="horizontal_nav_bar">
         {% for deck in decks %}
         <li><a href="{% url 'decks:deck' deck.id %}">{{ deck.name }}</a></li>
         {% endfor %}
     </ul>
+    {% endif %}
     <div style="margin-top:10px">
         <form id="frmMain" action="{% url 'decks:index' %}" method="post">
             {% csrf_token %}
+            <div>Deck Types</div>
+            <table id="tblTypes">
+                {% for dt in deck_types %}
+                <tr id="tr{{dt.id}}">
+                    <td>updown buttons<td>
+                    <td>
+                        <input type="text" name="name-{{dt.id}}" value="{{dt.name}}" />
+                        <input type="hidden" name="sort-{{dt.id}}" value="{{dt.sort_order}}" />
+                    </td>
+                    <td>{{dt.deck_set|length}}</td>
+                    <td>delete button</td>
+                </tr>
+                {% endfor %}
+                <tr id="trNew">
+                    <td colspan="4" style="text-align:right"><input type="button" onclick="addRow()" value="Add" /></td>
+                </tr>
+            </table>
+                
         </form>
     </div>
 </body>

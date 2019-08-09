@@ -17,7 +17,7 @@ def mobile(request):
 
 # Create your views here.
 def index(request):
-    context = {"decks":Deck.objects.all().order_by('name')}
+    context = {"decks":Deck.objects.all().order_by('name'), "deck_types":DeckType.objects.all().order_by('sort_order','name')}
     if mobile(request):
         return render(request, 'decks/m_index.html', context)
     else:
@@ -33,7 +33,9 @@ def add(request):
             p = re.compile("(\\d+)x (.+)")
             issue_list = []
             cards = None
-            for line in request.POST['list'].strip().split(os.linesep):
+            mainboard = request.POST['list'].strip().split(os.linesep)
+            total_deck = mainboard + request.POST['sideboard'].strip().split(os.linesep)
+            for i, line in enumerate(total_deck):
                 m = p.match(line)
                 if m is None:
                     issue_list.append("Line {} is badly formed. Card could not be added.".format(line))
@@ -106,12 +108,18 @@ def add(request):
                                                     set = set[0]
                                                 set.cards.add(c)
                                             break
-                            dc = DeckCard(card=c,count=int(m.groups()[0]),deck=d)
+                            if i < len(mainboard):
+                                dc = DeckCard(card=c,count=int(m.groups()[0]),deck=d)
+                            else:
+                                dc = DeckCard(card=c,sideboard_countcount=int(m.groups()[0]),deck=d)
                             dc.save()
                         else:
                             issue_list.append("Could not find a card named {}. Card could not be added.".format(m.groups()[1]))
                     else:
-                        dc = DeckCard(card=c[0],count=int(m.groups()[0]),deck=d)
+                        if i < len(mainboard):
+                            dc = DeckCard(card=c[0],count=int(m.groups()[0]),deck=d)
+                        else:
+                            dc = DeckCard(card=c[0],sideboard_count=int(m.groups()[0]),deck=d)
                         dc.save()
             if len(issue_list) > 0:
                 context['saved'] = '\\n'.join(issue_list)

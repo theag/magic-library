@@ -1,9 +1,14 @@
 from django.db import models
 from cards.models import Card,Type
 
-# Create your models here.
+class DeckType(models.Model):
+    name = models.CharField(max_length=200)
+    sort_order = models.SmallIntegerField(default=0)
+
+
 class Deck(models.Model):
     name = models.CharField(max_length=200)
+    deckType = models.ForeignKey(DeckType,on_delete=models.CASCADE)
     
     def deck_list(self):
         return self.deckcard_set.filter(count__gt=0).order_by('-commander','card__name')

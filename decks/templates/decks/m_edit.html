@@ -110,13 +110,13 @@
                 {% for key, value in deck.deck_set_list.items %}
                 tempText = "";
                 {% for dc in value %}
-                if(showAll || {{dc.card.count}} < {{dc.count}}) {
+                if(showAll || {{dc.card.count}} < {{dc.count}} || {{dc.card.count}} < ({{dc.sideboard_count}}+{{dc.count}})) {
                     if(showAll) {
-                        tempText += "\n    {{dc.count}}x ";
+                        tempText += "\n    {% if dc.count > 0 %}{{dc.count}}x {% endif %}{% if dc.sideboard_count > 0%}{{dc.sideboard_count}}s {% endif %}";
                     } else {
-                        tempText += "\n    " +({{dc.count}} - {{dc.card.count}}) +"x ";
+                        tempText += "\n    " {% if dc.count > 0 %}+({{dc.count}} - {{dc.card.count}}) +"x "{% endif %}{% if dc.sideboard_count > 0 %}+({{dc.sideboard_count}} - ({{dc.card.count}}-{{dc.count}})) +"s "{% endif %};
                     }
-                    tempText += "{{dc.card.name}}{% if dc.card.set_set.count > 1%} (M){% endif %}";
+                    tempText += "{% autoescape off %}{{dc.card.name}}{% endautoescape %}{% if dc.card.set_set.count > 1%} (M){% endif %}";
                 }
                 {% endfor %}
                 if(tempText.length > 0) {
@@ -134,9 +134,22 @@
                     } else {
                         txt += ({{dc.count}} - {{dc.card.count}}) +"x ";
                     }
-                    txt += "{{dc.card.name}}\n";
+                    txt += "{% autoescape off %}{{dc.card.name}}{% endautoescape %}\n";
                 }
                 {% endfor %}
+                {% if deck.sideboard %}
+                txt += "SIDEBOARD\n";
+                {% for dc in deck.sideboard %}
+                if(showAll || {{dc.card.count}} < ({{dc.sideboard_count}}+{{dc.count}})) {
+                    if(showAll) {
+                        txt += "{{dc.sideboard_count}}x ";
+                    } else {
+                        txt += ({{dc.sideboard_count}} - ({{dc.card.count}} - {{dc.count}})) +"x ";
+                    }
+                    txt += "{% autoescape off %}{{dc.card.name}}{% endautoescape %}\n";
+                }
+                {% endfor %}
+                {% endif %}
             }
             document.getElementById("txtDeckList").value = txt;
             document.getElementById("divDeckList").style.display = "block";
