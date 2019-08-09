@@ -170,7 +170,7 @@ def mobile(request):
     if MOBILE_AGENT_RE.match(request.META['HTTP_USER_AGENT']):
         return True
     else:
-        return True
+        return False
         
 # Create your views here.
 def index(request):
