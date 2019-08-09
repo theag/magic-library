@@ -1,0 +1,53 @@
+{% load static %}
+<head>
+    <title>Magic Library - Cards</title>
+    <link href="{% static 'm_styles.css' %}" type="text/css" rel="stylesheet"></link>
+     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script>
+        function doSubmit(action) {
+            document.getElementById("hdnAction").value = action;
+            document.getElementById("frmMain").submit();
+        }
+    </script>
+</head>
+<body>
+    {% include "cards/m_top_bar.html" %}
+    <div style="margin-top:10px">
+        <form id="frmMain" action="{% url 'cards:json' %}" method="post" autocomplete="off">
+            {% csrf_token %}
+            <input type="hidden" name="action" id="hdnAction" value="search" />
+            <div>
+                <input type="text" id="txtName" name="name" value="{{ name }}" />
+                <input type="submit" value="Search" />
+            </div>
+            <div style="margin-top:10px">
+                <select name="cards" style="width:225px" size="5" multiple>
+                    {% for result in results %}
+                    <option value="{{ result }}">{{ result }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div style="margin-top:10px">Add to Decks</div>
+            <div style="margin-top:10px">
+                <select name="deck_choices" style="width:225px" size="5" multiple>
+                    {% for d in decks %}
+                    <option value="{{d.id}}" {% if d.id in deck_choices %}selected{% endif %}>{{d.name}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div style="margin-top:10px">Add to Notes</div>
+            <div style="margin-top:10px"><textarea rows="5" cols="30" name="notes">{{ notes }}</textarea></div>
+            <div style="margin-top:10px">
+                <input type="button" onclick="doSubmit('add')" value="Add" />
+                <input type="button" onclick="doSubmit('addp')" value="Add +" />
+                <input type="button" onclick="window.location.href='{% url 'cards:index' %}'" value="Cancel" />
+            </div>
+        </form>
+    </div>
+    <script>
+        document.getElementById("txtName").focus();
+        {% if name %}
+        document.getElementById("txtName").setSelectionRange({{ name|length }},{{ name|length }});
+        {% endif %}
+    </script>
+</body>

@@ -355,7 +355,10 @@ def add(request):
         print("key error: {}".format(detail))
         pass
     context['card'] = c
-    return render(request, 'cards/edit.html', context)
+    if mobile(request):
+        return render(request, 'cards/m_edit.html', context)
+    else:
+        return render(request, 'cards/edit.html', context)
 
 def edit(request, card_id):
     c = Card.objects.get(pk=card_id)
@@ -552,5 +555,7 @@ def add_json(request):
                 context = {"results":[],"notes":request.POST["notes"],"decks":Deck.objects.all().order_by("name"),"deck_choices":map(int,request.POST.getlist('deck_choices'))}
     except KeyError as detail:
         print("key error: {}".format(detail))
-        
-    return render(request, 'cards/add_json.html', context)
+    if mobile(request):
+        return render(request, 'cards/m_add_json.html', context)
+    else:
+        return render(request, 'cards/add_json.html', context)    
