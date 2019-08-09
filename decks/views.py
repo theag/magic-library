@@ -25,7 +25,7 @@ def index(request):
 
 def add(request):
     try:
-        context = {}
+        context = {"decks":Deck.objects.all().order_by('name')}
         name = request.POST['name'].strip()
         if len(name) > 0:
             d = Deck(name=name)
@@ -141,8 +141,10 @@ def detail(request, deck_id):
             d.name = request.POST["name"]
             d.save()
             for dc in d.deckcard_set.all():
-                dc.count = int(request.POST['count-{}'.format(dc.id)])
-                dc.sideboard_count = int(request.POST['sideboard_count-{}'.format(dc.id)])
+                if 'count-{}'.format(dc.id) in request.POST:
+                    dc.count = int(request.POST['count-{}'.format(dc.id)])
+                if 'sideboard_count-{}'.format(dc.id) in request.POST:
+                    dc.sideboard_count = int(request.POST['sideboard_count-{}'.format(dc.id)])
                 if dc.count == 0 and dc.sideboard_count == 0:
                     dc.delete()
                 else:

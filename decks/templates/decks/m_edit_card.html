@@ -25,9 +25,9 @@
         <form id="frmMain" action="{% url 'decks:edit_card' deck_card.id %}" method="post">
             {% csrf_token %}
             <input type="hidden" name="action" id="hdnAction" value="" />
-            <div style="width:500px">
+            <div style="width:500px; font-size:24px">
                 <div style="float:left">{{deck_card.card.name}}</div>
-                <div style="float:right">{% include "cards/mana_view.html" with mana=deck_card.card.manaArr %}</div>
+                <div style="float:right">{% include "cards/m_mana_view.html" with mana=deck_card.card.manaArr %}</div>
                 <div style="clear:both">{{deck_card.card.supertypes}} {{deck_card.card.regular_types}}{% if deck_card.card.sub_types %} &mdash; {{deck_card.card.sub_types}}{% endif %}</div>
                 <div style="margin-top:10px">{% autoescape off %}{{deck_card.card.html_text}}{% endautoescape %}</div>
                 <hr/>

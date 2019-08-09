@@ -65,5 +65,12 @@
             <div><input type="button" onclick="document.getElementById('divDeckList').style.display='';" value="OK" /></div>
         </div>
     </div>
+    <script>
+        window.onclick = function(event) {
+            if(event.target.className == "gray") {
+                event.target.style.display = "";
+            }
+        }
+    </script>
     {% endif %}
 </body>

@@ -460,4 +460,13 @@
             <div class="pleaseWait">Please Wait</div>
         </div>
     </form>
+    <script>
+        window.onclick = function(event) {
+            if(event.target.id == "editMana") {
+                hideEditMana();
+            } else if(event.target.className == "gray") {
+                event.target.style.display = "";
+            }
+        }
+    </script>
 </body>
