@@ -99,7 +99,6 @@
         function draw() {
             var curve = [{% for val in deck.mana_curve %}{{val}},{% endfor %}];
             var max = Math.max(...curve);
-            console.log(curve);
             var can = document.getElementById("can");
             var ctx = can.getContext("2d");
             var fontHeight = Number(ctx.font.substring(0,ctx.font.indexOf("px")));
@@ -176,13 +175,13 @@
                 {% for key, value in deck.deck_set_list.items %}
                 tempText = "";
                 {% for dc in value %}
-                if(showAll || {{dc.card.count}} < {{dc.count}}) {
+                if(showAll || {{dc.card.count}} < {{dc.count}} || {{dc.card.count}} < ({{dc.sideboard_count}}+{{dc.count}})) {
                     if(showAll) {
-                        tempText += "\n    {{dc.count}}x ";
+                        tempText += "\n    {% if dc.count > 0 %}{{dc.count}}x {% endif %}{% if dc.sideboard_count > 0%}{{dc.sideboard_count}}s {% endif %}";
                     } else {
-                        tempText += "\n    " +({{dc.count}} - {{dc.card.count}}) +"x ";
+                        tempText += "\n    " {% if dc.count > 0 %}+({{dc.count}} - {{dc.card.count}}) +"x "{% endif %}{% if dc.sideboard_count > 0 %}+({{dc.sideboard_count}} - ({{dc.card.count}}-{{dc.count}})) +"s "{% endif %};
                     }
-                    tempText += "{{dc.card.name}}{% if dc.card.set_set.count > 1%} (M){% endif %}";
+                    tempText += "{% autoescape off %}{{dc.card.name}}{% endautoescape %}{% if dc.card.set_set.count > 1%} (M){% endif %}";
                 }
                 {% endfor %}
                 if(tempText.length > 0) {
@@ -200,9 +199,22 @@
                     } else {
                         txt += ({{dc.count}} - {{dc.card.count}}) +"x ";
                     }
-                    txt += "{{dc.card.name}}\n";
+                    txt += "{% autoescape off %}{{dc.card.name}}{% endautoescape %}\n";
                 }
                 {% endfor %}
+                {% if deck.sideboard %}
+                txt += "SIDEBOARD\n";
+                {% for dc in deck.sideboard %}
+                if(showAll || {{dc.card.count}} < ({{dc.sideboard_count}}+{{dc.count}})) {
+                    if(showAll) {
+                        txt += "{{dc.sideboard_count}}x ";
+                    } else {
+                        txt += ({{dc.sideboard_count}} - ({{dc.card.count}} - {{dc.count}})) +"x ";
+                    }
+                    txt += "{% autoescape off %}{{dc.card.name}}{% endautoescape %}\n";
+                }
+                {% endfor %}
+                {% endif %}
             }
             document.getElementById("txtDeckList").value = txt;
             document.getElementById("divDeckList").style.display = "block";
@@ -271,7 +283,7 @@
                     <th>Count</th>
                     <th>Have</th>
                 </tr>
-                {% for card in deck.sidebord %}
+                {% for card in deck.sideboard %}
                 {% if not show_only_missing or card.card.count < card.count %}
                 <tr>
                     <td><a id="a{{card.id}}" href="{% url 'decks:edit_card' card.id %}" onmouseleave="HideCardPopup()" {% if card.commander %}style="font-weight:bold"{% endif %}>{{ card.card.name }}</a></td>
@@ -348,7 +360,7 @@
     <div id="divDeckList" class="gray">
         <div class="popup">
             <div>Deck List</div>
-            <div><textarea id="txtDeckList" rows="30" cols="58"></textarea></div>
+            <div><textarea id="txtDeckList" rows="30" style="width:100%"></textarea></div>
             <div>
                 <input type="button" value="Copy" onclick="copyText()" />
                 <input type="button" value="Close" onclick="document.getElementById('divDeckList').style.display='';" />
