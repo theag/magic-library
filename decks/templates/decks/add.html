@@ -19,6 +19,14 @@
         <form id="frmMain" action="{% url 'decks:add' %}" method="post">
             {% csrf_token %}
             <div>Deck Name</div>
+            <div style="margin-top:10px">
+                Deck Type
+                <select name="deckType">
+                    {% for dt in deckTypes %}
+                    <option value="{{dt.id}}">{{dt.name}}</option>
+                    {% endfor %}
+                </select>
+            </div>
             <div style="margin-top:10px"><input type="text" name="name" /></div>
             <div style="margin-top:10px; margin-bottom:10px; float:left">
                 <div>Deck List</div>

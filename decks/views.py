@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from django.conf import settings
-from .models import Deck, DeckCard
+from .models import Deck, DeckCard, DeckType
 from cards.models import Card, Set, Type
 
 import os, json, re
@@ -17,7 +17,29 @@ def mobile(request):
 
 # Create your views here.
 def index(request):
-    context = {"decks":Deck.objects.all().order_by('name'), "deck_types":DeckType.objects.all().order_by('sort_order','name')}
+    try:
+        action = request.POST['action']
+        if action != "reset":
+            arr = json.loads(action)
+            ids = []
+            for i, val in enumerate(arr):
+                try:
+                    id = int(val)
+                    ids.append(id)
+                    dt = DeckType(pk=id)
+                    dt.name = request.POST['name-{}'.format(id)]
+                    dt.sort_order = i
+                    dt.save()
+                except ValueError:
+                    dt = DeckType(name=val,sort_order=i)
+                    dt.save()
+                    ids.append(dt.id)
+            to_delete = DeckType.objects.exclude(id__in=ids)
+            for dt in to_delete:
+                dt.delete()
+    except KeyError:
+        pass
+    context = {"deck_types":DeckType.objects.all().order_by('sort_order','name')}
     if mobile(request):
         return render(request, 'decks/m_index.html', context)
     else:
@@ -25,10 +47,10 @@ def index(request):
 
 def add(request):
     try:
-        context = {"decks":Deck.objects.all().order_by('name')}
+        context = {"decks":Deck.objects.all().order_by('name'),"deckTypes":DeckType.objects.all().order_by('sort_order','name')}
         name = request.POST['name'].strip()
         if len(name) > 0:
-            d = Deck(name=name)
+            d = Deck(name=name,deckType=DeckType.objects.get(pk=int(request.POST['deckType'])))
             d.save()
             p = re.compile("(\\d+)x (.+)")
             issue_list = []
@@ -147,6 +169,7 @@ def detail(request, deck_id):
         elif action == 'update':
             d = Deck.objects.get(pk=deck_id)
             d.name = request.POST["name"]
+            d.deckType = DeckType.objects.get(pk=int(request.POST['deckType']))
             d.save()
             for dc in d.deckcard_set.all():
                 if 'count-{}'.format(dc.id) in request.POST:
@@ -197,6 +220,7 @@ def detail(request, deck_id):
     else:
         context["decks"] = Deck.objects.all().order_by('name')
         context["deck"] = Deck.objects.get(pk=deck_id)
+    context["deckTypes"] = DeckType.objects.all().order_by('sort_order','name')
     
     if mobile(request):
         return render(request, 'decks/m_edit.html', context)

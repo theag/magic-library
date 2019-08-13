@@ -233,8 +233,15 @@
     {% include "decks/horizontal_navigation_bar.html" with page_name="index" %}
     <div class="horizontal_nav_bar_spacer"></div>
     <ul class="horizontal_nav_bar">
-        {% for d in decks %}
-        <li><a href="{% url 'decks:deck' d.id %}" {% if d.id == deck.id %}class="hor_active"{% endif %}>{{ d.name }}</a></li>
+        {% for dt in deckTypes %}
+        <li class="dropdown">
+            <a href="javascript:void(0)" class="dropbtn">{{ dt.name }}</a>
+            <div class="dropdown-content">
+                {% for d in dt.sorted_decks %}
+                <a href="{% url 'decks:deck' d.id %}">{{d.name}}</a>
+                {% endfor %}
+            </div>
+        </li>
         {% endfor %}
     </ul>
     <div style="margin-top:10px; float:left">
@@ -242,6 +249,14 @@
             {% csrf_token %}
             <input type="hidden" name="action" id="hdnAction" value="" />
             <div><input type="text" name="name" value="{{deck.name}}" /></div>
+            <div style="margin-top:10px">
+                Deck Type
+                <select name="deckType">
+                    {% for dt in deckTypes %}
+                    <option value="{{dt.id}}" {% if dt.id == deck.deckType.id %}selected{% endif %}>{{dt.name}}</option>
+                    {% endfor %}
+                </select>
+            </div>
             <div style="margin-top:10px">
                 <span>Show Only Missing</span>
                 <label class="switch" style="top:-10px"><input type="checkbox" name="show_only_missing" {% if show_only_missing %}checked{% endif %} onchange="doSubmit('ui')" /><span class="slider"></span></label>
