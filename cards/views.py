@@ -176,7 +176,7 @@ def arrayGet(request, index):
     if mobile(request):
         return json.loads(request.POST[index])
     else:
-        return map(int,request.POST.getlist(index))
+        return list(map(int,request.POST.getlist(index)))
 
 # Create your views here.
 def index(request):
@@ -561,7 +561,6 @@ def add_json(request):
                 context = {"results":[],"notes":request.POST["notes"],"decks":Deck.objects.all().order_by("name"),"deck_choices":arrayGet(request,'deck_choices')}
     except KeyError as detail:
         print("key error: {}".format(detail))
-    print(context['deck_choices'])
     if mobile(request):
         return render(request, 'cards/m_add_json.html', context)
     else:

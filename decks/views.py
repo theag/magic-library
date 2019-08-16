@@ -19,7 +19,7 @@ def arrayGet(request, index):
     if mobile(request):
         return json.loads(request.POST[index])
     else:
-        return map(int,request.POST.getlist(index))
+        return list(map(int,request.POST.getlist(index)))
 
 # Create your views here.
 def index(request):
