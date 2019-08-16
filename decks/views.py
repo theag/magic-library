@@ -15,12 +15,6 @@ def mobile(request):
     else:
         return False
 
-def arrayGet(request, index):
-    if mobile(request):
-        return json.loads(request.POST[index])
-    else:
-        return list(map(int,request.POST.getlist(index)))
-
 # Create your views here.
 def index(request):
     context = {"decks":Deck.objects.all().order_by('name')}
@@ -39,8 +33,8 @@ def add(request):
             p = re.compile("(\\d+)x (.+)")
             issue_list = []
             cards = None
-            for line in request.POST['list'].strip().split(os.linesep):
-                m = p.match(line)
+            for line in request.POST['list'].strip().replace('\r\n','\n').split('\n'):
+                m = p.match(line.strip())
                 if m is None:
                     issue_list.append("Line {} is badly formed. Card could not be added.".format(line))
                 else:
@@ -195,7 +189,7 @@ def detail(request, deck_id):
     else:
         context["decks"] = Deck.objects.all().order_by('name')
         context["deck"] = Deck.objects.get(pk=deck_id)
-    
+
     if mobile(request):
         return render(request, 'decks/m_edit.html', context)
     else:
