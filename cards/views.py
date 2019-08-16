@@ -172,6 +172,12 @@ def mobile(request):
     else:
         return False
 
+def arrayGet(request, index):
+    if mobile(request):
+        return json.loads(request.POST[index])
+    else:
+        return map(int,request.POST.getlist(index))
+
 # Create your views here.
 def index(request):
     context = None
@@ -478,13 +484,13 @@ def add_json(request):
         cards = json.load(f)
         f.close()
         if action == "search":
-            context = {"results":[],"name":request.POST["name"],"notes":request.POST["notes"],"decks":Deck.objects.all().order_by("name"),"deck_choices":json.loads(request.POST['deck_choices'])}
+            context = {"results":[],"name":request.POST["name"],"notes":request.POST["notes"],"decks":Deck.objects.all().order_by("name"),"deck_choices":arrayGet(request,'deck_choices')}
             if len(request.POST["name"]) > 0:
                 for name in cards.keys():
                     if name.lower().startswith(request.POST["name"].lower()):
                         context["results"].append(name)
         elif action == "add" or action == "addp":
-            for name in json.loads(request.POST['cards']):
+            for name in arrayGet(request,'cards'):
                 c = Card(name=name,
                     text=cards[name]['text'],
                     notes=request.POST['notes'],
@@ -546,15 +552,16 @@ def add_json(request):
                                     set.cards.add(c)
                                 break
                 #decks
-                for d_id in json.loads(request.POST['deck_choices']):
+                for d_id in arrayGet(request,'deck_choices'):
                     dc = DeckCard(card=c,count=1,deck=Deck.objects.get(pk=int(d_id)))
                     dc.save()
             if action == "add":
                 return redirect('/cards/')
             else:
-                context = {"results":[],"notes":request.POST["notes"],"decks":Deck.objects.all().order_by("name"),"deck_choices":json.loads(request.POST['deck_choices'])}
+                context = {"results":[],"notes":request.POST["notes"],"decks":Deck.objects.all().order_by("name"),"deck_choices":arrayGet(request,'deck_choices')}
     except KeyError as detail:
         print("key error: {}".format(detail))
+    print(context['deck_choices'])
     if mobile(request):
         return render(request, 'cards/m_add_json.html', context)
     else:
