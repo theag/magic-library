@@ -51,6 +51,10 @@
                     {% endfor %}
                 </ul>
             </div>
+            <div>
+                <input type="checkbox" name="add_sideboard" id="chk1" {% if add_sideboard %}checked{% endif %} />
+                <label for="chk1">Add to Sideboard</label>
+            </div>
             <div style="margin-top:10px">Add to Notes</div>
             <div style="margin-top:10px"><textarea rows="5" cols="30" name="notes">{{ notes }}</textarea></div>
             <div style="margin-top:10px">

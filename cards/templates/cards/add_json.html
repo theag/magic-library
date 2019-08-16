@@ -35,6 +35,9 @@
                     {% endfor %}
                 </select>
             </div>
+            <div>
+                <label><input type="checkbox" name="add_sideboard" {% if add_sideboard %}checked{% endif %} />Add to Sideboard</label>
+            </div>
             <div style="margin-top:10px">Add to Notes</div>
             <div style="margin-top:10px"><textarea rows="5" cols="30" name="notes">{{ notes }}</textarea></div>
             <div style="margin-top:10px">

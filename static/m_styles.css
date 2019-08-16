@@ -243,6 +243,11 @@ td a {
     border-radius: 16px;
 }
 
+td a.imagebutton {
+    min-width: 0;
+    padding: 8px 8px;
+}
+
 .gray {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */

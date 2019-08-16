@@ -487,6 +487,8 @@ def add_json(request):
         f.close()
         if action == "search":
             context = {"results":[],"name":request.POST["name"],"notes":request.POST["notes"],"decks":Deck.objects.all().order_by("name"),"deck_choices":arrayGet(request,'deck_choices',True)}
+            if "add_sideboard" in request.POST:
+                context["add_sideboard"] = "add_sideboard"
             if len(request.POST["name"]) > 0:
                 for name in cards.keys():
                     if name.lower().startswith(request.POST["name"].lower()):
@@ -555,12 +557,19 @@ def add_json(request):
                                 break
                 #decks
                 for d_id in arrayGet(request,'deck_choices',True):
-                    dc = DeckCard(card=c,count=1,deck=Deck.objects.get(pk=int(d_id)))
+                    if "add_sideboard" in request.POST:
+                        dc = DeckCard(card=c,sideboard_count=1,deck=Deck.objects.get(pk=int(d_id)))
+                    else:
+                        dc = DeckCard(card=c,count=1,deck=Deck.objects.get(pk=int(d_id)))
                     dc.save()
             if action == "add":
                 return redirect('/cards/')
             else:
-                context = {"results":[],"notes":request.POST["notes"],"decks":Deck.objects.all().order_by("name"),"deck_choices":arrayGet(request,'deck_choices',True)}
+                context = {"results":[],"notes":request.POST["notes"],
+                    "decks":Deck.objects.all().order_by("name"),
+                    "deck_choices":arrayGet(request,'deck_choices',True)}
+                if "add_sideboard" in request.POST:
+                    context["add_sideboard"] = "add_sideboard"
     except KeyError as detail:
         print("key error: {}".format(detail))
     if mobile(request):

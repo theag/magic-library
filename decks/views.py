@@ -33,7 +33,9 @@ def add(request):
             p = re.compile("(\\d+)x (.+)")
             issue_list = []
             cards = None
-            for line in request.POST['list'].strip().replace('\r\n','\n').split('\n'):
+            main = request.POST['list'].strip().replace('\r\n','\n').split('\n')
+            total = main + request.POST['sideboard'].strip().replace('\r\n','\n').split('\n')
+            for i,line in enumerate(total):
                 m = p.match(line.strip())
                 if m is None:
                     issue_list.append("Line {} is badly formed. Card could not be added.".format(line))
@@ -106,12 +108,18 @@ def add(request):
                                                     set = set[0]
                                                 set.cards.add(c)
                                             break
-                            dc = DeckCard(card=c,count=int(m.groups()[0]),deck=d)
+                            if i < len(main):
+                                dc = DeckCard(card=c,count=int(m.groups()[0]),deck=d)
+                            else:
+                                dc = DeckCard(card=c,sideboard_count=int(m.groups()[0]),deck=d)
                             dc.save()
                         else:
                             issue_list.append("Could not find a card named {}. Card could not be added.".format(m.groups()[1]))
                     else:
-                        dc = DeckCard(card=c[0],count=int(m.groups()[0]),deck=d)
+                        if i < len(main):
+                            dc = DeckCard(card=c[0],count=int(m.groups()[0]),deck=d)
+                        else:
+                            dc = DeckCard(card=c[0],sideboard_count=int(m.groups()[0]),deck=d)
                         dc.save()
             if len(issue_list) > 0:
                 context['saved'] = '\\n'.join(issue_list)
