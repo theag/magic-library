@@ -178,7 +178,7 @@
                                 }
                                 manaDiv.appendChild(div1);
                             }
-                                
+
                         } else {
                             div1 = document.createElement("DIV");
                             div1.style.position = "relative";
@@ -435,7 +435,7 @@
                     <th>Have</th>
                 </tr>
                 {% for card in deck.sidebord %}
-                {% if not show_only_missing or card.card.count < card.count %}
+                {% if not show_only_missing or card.card.count < card.sideboard_count %}
                 <tr>
                     <td>
                         <a class="imagebutton"
