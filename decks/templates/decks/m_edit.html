@@ -7,11 +7,11 @@
         .addBorder {
             border-collapse: collapse;
         }
-        
+
         .addBorder, .addBorder td, .addBorder th {
             border: 1px solid black;
         }
-        
+
         .addPadding td, .addPadding th {
             padding: 2px;
         }
@@ -26,7 +26,7 @@
                 doSubmit("delete");
             }
         }
-        
+
         function ShowCardPopup(name, mana, superTypes, types, subTypes, text, plt, colours) {
             var namDiv = document.getElementById("divName");
             var div = document.getElementById("divCardPopup");
@@ -90,11 +90,11 @@
                 div.style.display = "block";
             }
         }
-        
+
         function HideCardPopup() {
             document.getElementById("divCardPopup").style.display = "";
         }
-        
+
         function draw() {
             if(sessionStorage.getItem("currentTab")) {
                 var arr = JSON.parse(sessionStorage.getItem("currentTab"));
@@ -170,7 +170,7 @@
                 }
             }
         }
-        
+
         function showDeckList(showAll) {
             var txt = "";
             var tempText;
@@ -209,14 +209,14 @@
             document.getElementById("txtDeckList").value = txt;
             document.getElementById("divDeckList").style.display = "block";
         }
-        
+
         function copyText() {
             var ele = document.getElementById("txtDeckList");
             ele.select();
             document.execCommand("copy");
             document.getSelection().removeAllRanges();
         }
-        
+
         function showTab(tar, id) {
             var tabcontent = document.getElementsByClassName("tabcontent");
             for (i = 0; i < tabcontent.length; i++) {
@@ -227,7 +227,7 @@
             for (i = 0; i < tablinks.length; i++) {
                 tablinks[i].className = tablinks[i].className.replace(" active", "");
             }
-            
+
             sessionStorage.setItem("currentTab",JSON.stringify([tar.id,id]));
 
             document.getElementById(id).style.display = "block";
@@ -386,12 +386,12 @@
         </div>
     </div>
     <div id="divCardPopup" class="gray">
-        <div style="width:300px; height:200px; margin:15% auto">
-            <div id="divName" style="float:left">test</div>
-            <div id="divMana" style="float:right"></div>
-            <div id="divType" style="clear:both"></div>
-            <div id="divText" style="border:1px solid black;background-color:white; width:285px; height:65%; padding:5px; overflow-y:hidden; font-size:0.9em;"></div>
-            <div id="divPTL" style="text-align:right;margin-top:10px"></div>
+        <div style="width:600px; margin:15% auto;font-size:36px; padding:16px">
+            <div id="divName" style="float:left;font-size:inherit">test</div>
+            <div id="divMana" style="float:right;font-size:inherit"></div>
+            <div id="divType" style="clear:both;font-size:inherit"></div>
+            <div id="divText" style="border:1px solid black;background-color:white; padding:5px; overflow-y:hidden; font-size:0.9em;"></div>
+            <div id="divPTL" style="text-align:right;margin-top:10px;font-size:inherit"></div>
         </div>
     </div>
     <script>
