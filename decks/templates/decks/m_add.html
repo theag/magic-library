@@ -14,13 +14,16 @@
     </style>
 </head>
 <body>
-    {% include "decks/m_top_bar.html" with deck_list=decks %}
+    {% include "decks/m_top_bar.html" with deck_types=deck_types %}
     <div style="margin-top:10px; float:left">
         <form id="frmMain" action="{% url 'decks:add' %}" method="post">
             {% csrf_token %}
             <div>Deck Name</div>
             <div style="margin-top:10px"><input type="text" name="name" /></div>
-            <div style="margin-top:10px">Deck List</div>
+            <div style="margin-top:20px">
+                {% for dt in deck_types %}<input type="radio" value="{{dt.id}}" name="deckType" id="rdo{{forloop.counter}}" {% if forloop.counter == 1 %}checked{% endif %}/><label for="rdo{{forloop.counter}}">{{dt.name}}</label>{% endfor %}
+            </div>
+            <div style="margin-top:20px">Deck List</div>
             <div style="margin-top:10px"><textarea name="list" cols="25" rows="20"></textarea></div>
             <div style="margin-top:10px">
                 <input type="submit" value="Save" />

@@ -181,7 +181,7 @@
     </script>
 </head>
 <body onload="draw()">
-    {% include "decks/m_top_bar.html" with deck_list=decks %}
+    {% include "decks/m_top_bar.html" with deck_types=deck_types %}
     <form id="frmMain" action="{% url 'decks:deck' deck.id %}" method="post">
         {% csrf_token %}
         <input type="hidden" name="action" id="hdnAction" value="" />

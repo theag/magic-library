@@ -16,12 +16,6 @@ body {
     cursor: default;
 }
 
-.horizontal_nav_bar_spacer {
-    background-color: #5F5F5F;
-    height: 5px;
-    margin: 0 0 0 -8px;
-}
-
 .horizontal_nav_bar li {
     float: left;
 }

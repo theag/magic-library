@@ -9,16 +9,16 @@
         document.getElementById("myNav").style.width = "0%";
     }
     
-    function showDeckMenu() {
-        var mn = document.getElementById("topmenu");
+    function showDeckTypeMenu(id) {
+        var mn = document.getElementById("topmenu"+id);
         if(mn.className == "") {
             mn.className = "selected";
-            document.getElementById("deckMenu").style.display = "block";
-            document.querySelector("#topmenu i").innerText = "remove";
+            document.getElementById("menu"+id).style.display = "block";
+            document.querySelector("#topmenu"+id +" i").innerText = "remove";
         } else {
             mn.className = "";
-            document.getElementById("deckMenu").style.display = "";
-            document.querySelector("#topmenu i").innerText = "add";
+            document.getElementById("menu"+id).style.display = "";
+            document.querySelector("#topmenu"+id +" i").innerText = "add";
         }
     }
 </script>
@@ -35,12 +35,14 @@
     <a href="{% url 'cards:index' %}">Cards</a>
     <div class="line"></div>
     <a href="{% url 'decks:add' %}">Add</a>
-    <a id="topmenu" href="javascript:showDeckMenu()">Decks<i class="material-icons md-72" style="float:right">add</i></a>
-    <div id="deckMenu" class="overlay-menu">
-        {% for deck in decks %}
+    {% for dt in deck_types %}
+    <a id="topmenu{{dt.id}}" href="javascript:showDeckTypeMenu({{dt.id}})">{{dt.name}}<i class="material-icons md-72" style="float:right">add</i></a>
+    <div id="menu{{dt.id}}" class="overlay-menu">
+        {% for deck in dt.sorted_decks %}
         <a href="{% url 'decks:deck' deck.id %}">{{ deck.name }}</a>
         {% endfor %}
     </div>
+    {% endfor %}
   </div>
 
 </div>

@@ -13,7 +13,7 @@ def mobile(request):
     if MOBILE_AGENT_RE.match(request.META['HTTP_USER_AGENT']):
         return True
     else:
-        return False
+        return True
 
 # Create your views here.
 def index(request):
@@ -47,7 +47,9 @@ def index(request):
 
 def add(request):
     try:
-        context = {"decks":Deck.objects.all().order_by('name'),"deckTypes":DeckType.objects.all().order_by('sort_order','name')}
+        context = {"decks":Deck.objects.all().order_by('name'),"deck_types":DeckType.objects.all().order_by('sort_order','name')}
+        for key in request.POST:
+            print("{}: {}".format(key,request.POST[key]))
         name = request.POST['name'].strip()
         if len(name) > 0:
             d = Deck(name=name,deckType=DeckType.objects.get(pk=int(request.POST['deckType'])))
@@ -220,7 +222,7 @@ def detail(request, deck_id):
     else:
         context["decks"] = Deck.objects.all().order_by('name')
         context["deck"] = Deck.objects.get(pk=deck_id)
-    context["deckTypes"] = DeckType.objects.all().order_by('sort_order','name')
+    context["deck_types"] = DeckType.objects.all().order_by('sort_order','name')
     
     if mobile(request):
         return render(request, 'decks/m_edit.html', context)
@@ -247,8 +249,9 @@ def edit_card(request, deck_card_id):
             c.save()
         return redirect('/decks/{}'.format(dc.deck.id))
     except KeyError:
-        context = {"decks":Deck.objects.all().order_by('name'),"deck_card":DeckCard.objects.get(pk=deck_card_id)}
+        context = {"deck_types":DeckType.objects.all().order_by('sort_order','name'),"deck_card":DeckCard.objects.get(pk=deck_card_id)}
         context["other_cards"] = DeckCard.objects.filter(card=context["deck_card"].card.id)
+    
     if mobile(request):
         return render(request, 'decks/m_edit_card.html', context)
     else:

@@ -231,9 +231,8 @@
 <body onload="draw()">
     <h1>Magic Library - Decks</h1>
     {% include "decks/horizontal_navigation_bar.html" with page_name="index" %}
-    <div class="horizontal_nav_bar_spacer"></div>
     <ul class="horizontal_nav_bar">
-        {% for dt in deckTypes %}
+        {% for dt in deck_types %}
         <li class="dropdown">
             <a href="javascript:void(0)" class="dropbtn">{{ dt.name }}</a>
             <div class="dropdown-content">
@@ -252,7 +251,7 @@
             <div style="margin-top:10px">
                 Deck Type
                 <select name="deckType">
-                    {% for dt in deckTypes %}
+                    {% for dt in deck_types %}
                     <option value="{{dt.id}}" {% if dt.id == deck.deckType.id %}selected{% endif %}>{{dt.name}}</option>
                     {% endfor %}
                 </select>
