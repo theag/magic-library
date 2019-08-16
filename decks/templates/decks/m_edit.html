@@ -74,6 +74,129 @@
                 }
                 div.firstElementChild.style.backgroundColor = bg;
                 namDiv.innerText = name;
+                var manaDiv = document.getElementById("divMana");
+                while(manaDiv.childElementCount > 0) {
+                    manaDiv.removeChild(manaDiv.lastElementChild);
+                }
+                if(mana != "") {
+                    var manaArr = mana.split(",");
+                    var img, div1, div2;
+                    for(var i = 0; i < manaArr.length; i++) {
+                        if(isNaN(manaArr[i]) && manaArr[i] != "X") {
+                            img = document.createElement("IMG");
+                            if(manaArr[i].length == 1) {
+                                switch(manaArr[i].charAt(0)) {
+                                    case "W":
+                                        img.src = "{% static 'white.png' %}";
+                                        break;
+                                    case "U":
+                                        img.src = "{% static 'blue.png' %}";
+                                        break;
+                                    case "B":
+                                        img.src = "{% static 'black.png' %}";
+                                        break;
+                                    case "R":
+                                        img.src = "{% static 'red.png' %}";
+                                        break;
+                                    case "G":
+                                        img.src = "{% static 'green.png' %}";
+                                        break;
+                                }
+                                if(i > 0) {
+                                    img.style.marginLeft = "5px";
+                                }
+                                manaDiv.appendChild(img);
+                            } else if(manaArr[i].charAt(1) == "P") {
+                                switch(manaArr[i].charAt(0)) {
+                                    case "W":
+                                        img.src = "{% static 'p_white.png' %}";
+                                        break;
+                                    case "U":
+                                        img.src = "{% static 'p_blue.png' %}";
+                                        break;
+                                    case "B":
+                                        img.src = "{% static 'p_black.png' %}";
+                                        break;
+                                    case "R":
+                                        img.src = "{% static 'p_red.png' %}";
+                                        break;
+                                    case "G":
+                                        img.src = "{% static 'p_green.png' %}";
+                                        break;
+                                }
+                                if(i > 0) {
+                                    img.style.marginLeft = "5px";
+                                }
+                                manaDiv.appendChild(img);
+                            } else {
+                                div1 = document.createElement("DIV");
+                                div1.style.position = "relative";
+                                div1.style.display = "inline-block";
+                                switch(manaArr[i].charAt(0)) {
+                                    case "W":
+                                        img.src = "{% static 'white.png' %}";
+                                        break;
+                                    case "U":
+                                        img.src = "{% static 'blue.png' %}";
+                                        break;
+                                    case "B":
+                                        img.src = "{% static 'black.png' %}";
+                                        break;
+                                    case "R":
+                                        img.src = "{% static 'red.png' %}";
+                                        break;
+                                    case "G":
+                                        img.src = "{% static 'green.png' %}";
+                                        break;
+                                }
+                                div1.appendChild(img);
+                                img = document.createElement("IMG");
+                                img.style.position = "absolute";
+                                img.style.top = "50%";
+                                img.style.left = "50%";
+                                img.style.transform = "translate(-50%,-50%)";
+                                switch(manaArr[i].charAt(1)) {
+                                    case "W":
+                                        img.src = "{% static 'h_white.png' %}";
+                                        break;
+                                    case "U":
+                                        img.src = "{% static 'h_blue.png' %}";
+                                        break;
+                                    case "B":
+                                        img.src = "{% static 'h_black.png' %}";
+                                        break;
+                                    case "R":
+                                        img.src = "{% static 'h_red.png' %}";
+                                        break;
+                                    case "G":
+                                        img.src = "{% static 'h_green.png' %}";
+                                        break;
+                                }
+                                div1.appendChild(img);
+                                if(i > 0) {
+                                    div1.style.marginLeft = "5px";
+                                }
+                                manaDiv.appendChild(div1);
+                            }
+                                
+                        } else {
+                            div1 = document.createElement("DIV");
+                            div1.style.position = "relative";
+                            div1.style.display = "inline-block";
+                            img = document.createElement("IMG");
+                            img.src = "{% static 'gray.png' %}";
+                            div1.appendChild(img);
+                            div2 = document.createElement("DIV");
+                            div2.style.position = "absolute";
+                            div2.style.top = "50%";
+                            div2.style.left = "50%";
+                            div2.style.transform = "translate(-50%,-50%)";
+                            div2.appendChild(document.createTextNode(manaArr[i]));
+                            div1.appendChild(div2);
+                            manaDiv.appendChild(div1);
+                        }
+                    }
+                }
                 var ts = superTypes;
                 if(ts.length > 0) {
                     ts += " ";
@@ -83,7 +206,7 @@
                     ts += " &mdash; " +subTypes;
                 }
                 document.getElementById("divType").innerHTML = ts;
-                document.getElementById("divText").innerHTML = text.replace(/&amp;quot;/g,"\"");
+                document.getElementById("divText").innerHTML = text.replace(/&amp;quot;/g,"\"").replace(/\n/g,"<br/>");;
                 document.getElementById("divPTL").innerText = plt;
             }
             if(div.style.display == "") {
@@ -98,7 +221,9 @@
         function draw() {
             if(sessionStorage.getItem("currentTab")) {
                 var arr = JSON.parse(sessionStorage.getItem("currentTab"));
-                showTab(document.getElementById(arr[0]),arr[1]);
+                if(arr[0] == {{deck.id}}) {
+                    showTab(document.getElementById(arr[1]),arr[2]);
+                }
             }
             var curve = [{% for val in deck.mana_curve %}{{val}},{% endfor %}];
             var max = Math.max(...curve);
@@ -228,7 +353,7 @@
                 tablinks[i].className = tablinks[i].className.replace(" active", "");
             }
 
-            sessionStorage.setItem("currentTab",JSON.stringify([tar.id,id]));
+            sessionStorage.setItem("currentTab",JSON.stringify([{{deck.id}},tar.id,id]));
 
             document.getElementById(id).style.display = "block";
             tar.className += " active";
@@ -388,7 +513,7 @@
     <div id="divCardPopup" class="gray">
         <div style="width:600px; margin:15% auto;font-size:36px; padding:16px">
             <div id="divName" style="float:left;font-size:inherit">test</div>
-            <div id="divMana" style="float:right;font-size:inherit"></div>
+            <div id="divMana" style="float:right;font-size:inherit" class="mana"></div>
             <div id="divType" style="clear:both;font-size:inherit"></div>
             <div id="divText" style="border:1px solid black;background-color:white; padding:5px; overflow-y:hidden; font-size:0.9em;"></div>
             <div id="divPTL" style="text-align:right;margin-top:10px;font-size:inherit"></div>
