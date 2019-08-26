@@ -136,6 +136,8 @@ def add(request):
             return render(request, 'decks/m_add.html', context)
         else:
             return render(request, 'decks/add.html', context)
+    except OSError as ex:
+        print(ex)
 
 def detail(request, deck_id):
     context = None
