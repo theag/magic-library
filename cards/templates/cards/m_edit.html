@@ -297,8 +297,15 @@
         }
 
         function doDeckAdd() {
-            document.getElementById("hdnAction").value = "deckadd";
-            document.getElementById("frmMain").submit();
+            var c = Number(document.getElementById("deck_count").value);
+            var sc = Number(document.getElementById("sideboard_count").value);
+            if(c == 0 && sc == 0) {
+                document.getElementById("alert-text").innerText = "Deck count and sideboard count cannot both be zero.";
+                document.getElementById("alert").style.display = "block";
+            } else {
+                document.getElementById("hdnAction").value = "deckadd";
+                document.getElementById("frmMain").submit();
+            }
         }
 
         function updateDeck(deck_id) {
@@ -456,6 +463,13 @@
                     <input type="button" onclick="doDeckAdd()" value="OK" />
                     <input type="button" onclick="document.getElementById('addToDeck').style.display='';" value="Cancel" />
                 </div>
+            </div>
+        </div>
+        <div class="gray" id="alert">
+            <div class="popup">
+                <div>Alert</div>
+                <div id="alert-text"></div>
+                <div><input type="button" value="OK" onclick="document.getElementById('alert').style.display = '';" /></div>
             </div>
         </div>
         <div id="pleaseWait" class="gray">
