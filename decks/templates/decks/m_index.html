@@ -1,6 +1,6 @@
 {% load static %}
 <head>
-    <title>Magic Library - Decks</title>
+    <title>Magic Library - Deck Types</title>
     <link href="{% static 'm_styles.css' %}" type="text/css" rel="stylesheet"></link>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
@@ -17,8 +17,161 @@
             document.getElementById("hdnAction").value = action;
             document.getElementById("frmMain").submit();
         }
+        
+        var newRows = 0;
+        function addRow() {
+            newRows += 1;
+            var tr = document.createElement("TR");
+            tr.id = "tr" +newRows;
+            var td = document.createElement("TD");
+            var input = document.createElement("INPUT");
+            input.type = "button";
+            input.value = "^";
+            input.setAttribute("onclick","moveUp('tr"+newRows+"')");
+            td.appendChild(input);
+            td.appendChild(document.createTextNode("\n"));
+            input = document.createElement("INPUT");
+            input.type = "button";
+            input.value = "v";
+            input.setAttribute("disabled","disabled");
+            input.setAttribute("onclick","moveDown('tr"+newRows+"')");
+            td.appendChild(input);
+            tr.appendChild(td);
+            
+            td = document.createElement("TD");
+            input = document.createElement("INPUT");
+            input.type = "text";
+            td.appendChild(input);
+            tr.appendChild(td);
+            
+            td = document.createElement("TD");
+            td.innerText = "*";
+            tr.appendChild(td);
+            
+            td = document.createElement("TD");
+            input = document.createElement("INPUT");
+            input.type = "button";
+            input.value = "Delete";
+            input.setAttribute("onclick","deleteRow('tr" +newRows +"')");
+            td.appendChild(input);
+            tr.appendChild(td);
+            
+            var lastRow = document.getElementById("trNew");
+            
+            if(lastRow.previousElementSibling) {
+                lastRow.previousElementSibling.firstElementChild.lastElementChild.removeAttribute("disabled");
+            }
+            
+            lastRow.insertAdjacentElement("beforebegin",tr);
+        }
+        
+        function moveUp(trid) {
+            var tr = document.getElementById(trid);
+            var above = tr.previousElementSibling;
+            tr.parentNode.removeChild(tr);
+            above.insertAdjacentElement("beforebegin",tr);
+            //if the other element went to the bottom, then I'm no longer the bottom
+            if(above.nextElementSibling.id == "trNew") {
+                above.firstElementChild.lastElementChild.setAttribute("disabled","disabled");
+                tr.firstElementChild.lastElementChild.removeAttribute("disabled");
+            }
+            //if I'm the top, then the other element is no longer then top
+            if(tr.previousElementSibling == null) {
+                tr.firstElementChild.firstElementChild.setAttribute("disabled","disabled");
+                above.firstElementChild.firstElementChild.removeAttribute("disabled");
+            }
+        }
+        
+        function moveDown(trid) {
+            var tr = document.getElementById(trid);
+            var below = tr.nextElementSibling;
+            tr.parentNode.removeChild(tr);
+            below.insertAdjacentElement("afterend",tr);
+            //if I went to the bottom, then the other element is no longer the bottom
+            if(tr.nextElementSibling.id == "trNew") {
+                tr.firstElementChild.lastElementChild.setAttribute("disabled","disabled");
+                below.firstElementChild.lastElementChild.removeAttribute("disabled");
+            }
+            //if the other element is the top, then I am no longer then top
+            if(below.previousElementSibling == null) {
+                below.firstElementChild.firstElementChild.setAttribute("disabled","disabled");
+                tr.firstElementChild.firstElementChild.removeAttribute("disabled");
+            }
+        }
+        
+        function deleteRow(trid) {
+            var tr = document.getElementById(trid);
+            //If I'm the top then the element below me becomes the top
+            if(tr.previousElementSibling == null) {
+                tr.nextElementSibling.firstElementChild.firstElementChild.setAttribute("disabled","disabled");
+            }
+            //If I'm the bottom then the element above me becomes the bottom
+            if(tr.nextElementSibling.id == "trNew") {
+                tr.previousElementSibling.firstElementChild.lastElementChild.setAttribute("disabled","disabled");
+            }
+            tr.parentNode.removeChild(tr);
+        }
+        
+        function showAlert(message) {
+            document.getElementById("alert_message").innerText = message;
+            document.getElementById("alert").style.display = "block";
+        }
+        
+        function doUpdate() {
+            var nam, i, arr;
+            arr = [];
+            var tbl = document.getElementById("tblTypes").firstElementChild;
+            for(i = 0; i < tbl.children.length - 1; i++) {
+                if(tbl.children[i].children[1].firstElementChild.value.trim() == "") {
+                    showAlert("Deck Type name cannot be blank.");
+                    return;
+                }
+                if(tbl.children[i].id.indexOf("-") >= 0) {
+                    arr.push(tbl.children[i].id.substring(3));
+                } else {
+                    arr.push(tbl.children[i].children[1].firstElementChild.value);
+                }
+            }
+            doSubmit(JSON.stringify(arr));
+        }
     </script>
 </head>
 <body>
     {% include "decks/m_top_bar.html" with deck_types=deck_types %}
+    <div style="margin-top:10px">
+        <form id="frmMain" action="{% url 'decks:index' %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="action" id="hdnAction" />
+            <div>Types</div>
+            <table id="tblTypes">
+                {% for dt in deck_types %}
+                <tr id="tr-{{dt.id}}">
+                    <td>
+                        <input type="button" value="^" {% if forloop.counter == 1 %}disabled{% endif %} onclick="moveUp('tr-{{dt.id}}')" />
+                        <input type="button" value="v" {% if forloop.counter == deck_types|length %}disabled{% endif %} onclick="moveDown('tr-{{dt.id}}')" />
+                    </td>
+                    <td>
+                        <input type="text" name="name-{{dt.id}}" value="{{dt.name}}" />
+                    </td>
+                    <td>{{dt.deck_set.all|length}}</td>
+                    <td><input type="button" value="Delete" onclick="{% if dt.deck_set.all|length == 0 %}deleteRow('tr-{{dt.id}}'){% else %}showAlert('{{dt.name}} still has {{dt.deck_set.all|length}} decks. Please move those decks to other types first.'){% endif %}" /></td>
+                </tr>
+                {% endfor %}
+                <tr id="trNew">
+                    <td colspan="4" style="text-align:right"><input type="button" onclick="addRow()" value="Add" /></td>
+                </tr>
+            </table>
+            <div>
+                <input type="button" value="Update" onclick="doUpdate()" />
+                <input type="button" value="Reset" onclick="doSubmit('reset')" />
+            </div>
+        </form>
+    </div>
+    <div class="gray" id="alert">
+        <div class="popup">
+            <div>Alert</div>
+            <div id="alert_message"></div>
+            <div><input type="button" value="OK" onclick="document.getElementById('alert').style.display = '';" /></div>
+        </div>
+    </div>
 </body>

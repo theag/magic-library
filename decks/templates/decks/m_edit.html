@@ -380,6 +380,14 @@
         <input type="hidden" name="action" id="hdnAction" value="" />
         <div style="margin-top:10px"><input type="text" name="name" value="{{deck.name}}" /></div>
         <div style="margin-top:10px">
+            Deck Type:
+            <select name="deckType">
+                {% for dt in deck_types %}
+                <option value="{{dt.id}}" {% if dt.id == deck.deckType.id %}selected{% endif %}>{{dt.name}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div style="margin-top:10px">
             <label for="chk1">Show Only Missing</label>
             <label class="switch" style="top:-10px"><input type="checkbox" id="chk1" name="show_only_missing" {% if show_only_missing %}checked{% endif %} onchange="doSubmit('ui')" /><span class="slider"></span></label>
         </div>

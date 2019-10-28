@@ -34,6 +34,7 @@
   <div class="overlay-content">
     <a href="{% url 'cards:index' %}">Cards</a>
     <div class="line"></div>
+    <a href="{% url 'decks:index' %}">Types</a>
     <a href="{% url 'decks:add' %}">Add</a>
     {% for dt in deck_types %}
     <a id="topmenu{{dt.id}}" href="javascript:showDeckTypeMenu({{dt.id}})">{{dt.name}}<i class="material-icons md-72" style="float:right">add</i></a>

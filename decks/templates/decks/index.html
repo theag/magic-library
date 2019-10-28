@@ -57,7 +57,9 @@
             
             var lastRow = document.getElementById("trNew");
             
-            lastRow.previousElementSibling.firstElementChild.lastElementChild.removeAttribute("disabled");
+            if(lastRow.previousElementSibling) {
+                lastRow.previousElementSibling.firstElementChild.lastElementChild.removeAttribute("disabled");
+            }
             
             lastRow.insertAdjacentElement("beforebegin",tr);
         }

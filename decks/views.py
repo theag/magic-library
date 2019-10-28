@@ -13,7 +13,7 @@ def mobile(request):
     if MOBILE_AGENT_RE.match(request.META['HTTP_USER_AGENT']):
         return True
     else:
-        return True
+        return False
 
 # Create your views here.
 def index(request):
@@ -48,8 +48,6 @@ def index(request):
 def add(request):
     try:
         context = {"decks":Deck.objects.all().order_by('name'),"deck_types":DeckType.objects.all().order_by('sort_order','name')}
-        for key in request.POST:
-            print("{}: {}".format(key,request.POST[key]))
         name = request.POST['name'].strip()
         if len(name) > 0:
             d = Deck(name=name,notes=request.POST['notes'],deckType=DeckType.objects.get(pk=int(request.POST['deckType'])))
@@ -57,8 +55,15 @@ def add(request):
             p = re.compile("(\\d+)x (.+)")
             issue_list = []
             cards = None
-            main = request.POST['list'].strip().replace('\r\n','\n').split('\n')
-            total = main + request.POST['sideboard'].strip().replace('\r\n','\n').split('\n')
+            if len(request.POST['list'].strip().replace('\r\n','\n')) != 0:
+                main = request.POST['list'].strip().replace('\r\n','\n').split('\n')
+            else:
+                main = []
+            if len(request.POST['sideboard'].strip().replace('\r\n','\n')) != 0:
+                total = main + request.POST['sideboard'].strip().replace('\r\n','\n').split('\n')
+            else:
+                total = main
+            print(total)
             for i,line in enumerate(total):
                 m = p.match(line.strip())
                 if m is None:
@@ -147,8 +152,9 @@ def add(request):
                         dc.save()
             if len(issue_list) > 0:
                 context['saved'] = '\\n'.join(issue_list)
+                context['new_deck'] = d.id
             else:
-                return redirect('/decks/')
+                return redirect('/decks/{}'.format(d.id))
         else:
             context['error'] = "Deck must have a name."
         if mobile(request):
