@@ -52,15 +52,15 @@ def add(request):
             print("{}: {}".format(key,request.POST[key]))
         name = request.POST['name'].strip()
         if len(name) > 0:
-            d = Deck(name=name,deckType=DeckType.objects.get(pk=int(request.POST['deckType'])))
+            d = Deck(name=name,notes=request.POST['notes'],deckType=DeckType.objects.get(pk=int(request.POST['deckType'])))
             d.save()
             p = re.compile("(\\d+)x (.+)")
             issue_list = []
             cards = None
-            mainboard = request.POST['list'].strip().split(os.linesep)
-            total_deck = mainboard + request.POST['sideboard'].strip().split(os.linesep)
-            for i, line in enumerate(total_deck):
-                m = p.match(line)
+            main = request.POST['list'].strip().replace('\r\n','\n').split('\n')
+            total = main + request.POST['sideboard'].strip().replace('\r\n','\n').split('\n')
+            for i,line in enumerate(total):
+                m = p.match(line.strip())
                 if m is None:
                     issue_list.append("Line {} is badly formed. Card could not be added.".format(line))
                 else:
@@ -132,15 +132,15 @@ def add(request):
                                                     set = set[0]
                                                 set.cards.add(c)
                                             break
-                            if i < len(mainboard):
+                            if i < len(main):
                                 dc = DeckCard(card=c,count=int(m.groups()[0]),deck=d)
                             else:
-                                dc = DeckCard(card=c,sideboard_countcount=int(m.groups()[0]),deck=d)
+                                dc = DeckCard(card=c,sideboard_count=int(m.groups()[0]),deck=d)
                             dc.save()
                         else:
                             issue_list.append("Could not find a card named {}. Card could not be added.".format(m.groups()[1]))
                     else:
-                        if i < len(mainboard):
+                        if i < len(main):
                             dc = DeckCard(card=c[0],count=int(m.groups()[0]),deck=d)
                         else:
                             dc = DeckCard(card=c[0],sideboard_count=int(m.groups()[0]),deck=d)
@@ -160,6 +160,8 @@ def add(request):
             return render(request, 'decks/m_add.html', context)
         else:
             return render(request, 'decks/add.html', context)
+    except OSError as ex:
+        print(ex)
 
 def detail(request, deck_id):
     context = None
@@ -172,6 +174,7 @@ def detail(request, deck_id):
             d = Deck.objects.get(pk=deck_id)
             d.name = request.POST["name"]
             d.deckType = DeckType.objects.get(pk=int(request.POST['deckType']))
+            d.notes = request.POST["notes"]
             d.save()
             for dc in d.deckcard_set.all():
                 if 'count-{}'.format(dc.id) in request.POST:
@@ -223,7 +226,6 @@ def detail(request, deck_id):
         context["decks"] = Deck.objects.all().order_by('name')
         context["deck"] = Deck.objects.get(pk=deck_id)
     context["deck_types"] = DeckType.objects.all().order_by('sort_order','name')
-    
     if mobile(request):
         return render(request, 'decks/m_edit.html', context)
     else:

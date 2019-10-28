@@ -260,12 +260,22 @@
         }
         
         function addToDeck() {
+            document.getElementById("newdeck").selectedIndex = 0;
+            document.getElementById("deck_count").value = 0;
+            document.getElementById("sideboard_count").value = 0;
             document.getElementById("addToDeck").style.display = "block";
         }
         
         function doDeckAdd() {
-            document.getElementById("hdnAction").value = "deckadd";
-            document.getElementById("frmMain").submit();
+            var c = Number(document.getElementById("deck_count").value);
+            var sc = Number(document.getElementById("sideboard_count").value);
+            if(c == 0 && sc == 0) {
+                document.getElementById("alert-text").innerText = "Deck count and sideboard count cannot both be zero.";
+                document.getElementById("alert").style.display = "block";
+            } else {
+                document.getElementById("hdnAction").value = "deckadd";
+                document.getElementById("frmMain").submit();
+            }
         }
     </script>
 </head>
@@ -379,7 +389,7 @@
                 <div>Add to Deck</div>
                 <div>
                     Deck:
-                    <select name="newdeck">
+                    <select name="newdeck" id="newdeck">
                         {% for d in all_decks %}
                         <option value="{{d.id}}">{{d.name}}</option>
                         {% endfor %}
@@ -387,11 +397,11 @@
                 </div>
                 <div>
                     Count:
-                    <input type="number" name="deck_count" value="1" min="1" style="width:50px" />
+                    <input type="number" name="deck_count" id="deck_count" value="0" min="0" style="width:50px" />
                 </div>
                 <div>
                     Sideboard:
-                    <input type="number" name="sideboard_count" value="1" min="1" style="width:50px" />
+                    <input type="number" name="sideboard_count" id="sideboard_count" value="0" min="0" style="width:50px" />
                 </div>
                 <div>
                     <label>Commander: <input type="checkbox" name="commander" /></label>
@@ -400,6 +410,13 @@
                     <input type="button" onclick="doDeckAdd()" value="OK" />
                     <input type="button" onclick="document.getElementById('addToDeck').style.display='';" value="Cancel" />
                 </div>
+            </div>
+        </div>
+        <div class="gray" id="alert">
+            <div class="popup">
+                <div>Alert</div>
+                <div id="alert-text"></div>
+                <div><input type="button" value="OK" onclick="document.getElementById('alert').style.display = '';" /></div>
             </div>
         </div>
         <div id="pleaseWait" class="gray">
