@@ -28,7 +28,7 @@ def add(request):
         context = {"decks":Deck.objects.all().order_by('name')}
         name = request.POST['name'].strip()
         if len(name) > 0:
-            d = Deck(name=name)
+            d = Deck(name=name,notes=request.POST['notes'])
             d.save()
             p = re.compile("(\\d+)x (.+)")
             issue_list = []
@@ -149,6 +149,7 @@ def detail(request, deck_id):
         elif action == 'update':
             d = Deck.objects.get(pk=deck_id)
             d.name = request.POST["name"]
+            d.notes = request.POST["notes"]
             d.save()
             for dc in d.deckcard_set.all():
                 if 'count-{}'.format(dc.id) in request.POST:

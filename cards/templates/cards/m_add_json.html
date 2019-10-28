@@ -14,7 +14,7 @@
             var lst = JSON.parse(hdn.value);
             var ind = lst.indexOf(value);
             if(ind < 0) {
-                lst.splice(-1,0,value);
+                lst.splice(-1,0,value.replace("&#39;","'"));
                 document.getElementById(id+value).className = "selected";
             } else {
                 lst.splice(ind,1);
@@ -38,7 +38,7 @@
                 <input type="hidden" name="cards" id="hdncards" value="[]" />
                 <ul id="cards" class="select" style="height: 240px; overflow-y:auto">
                     {% for result in results %}
-                    <li id="cards{{result}}" onclick="updateList('cards','{{result}}')">{{ result }}</li>
+                    <li id="cards{{result}}" onclick="updateList('cards','{{result}}')">{%autoescape off%}{{ result }}{%endautoescape%}</li>
                     {% endfor %}
                 </ul>
             </div>

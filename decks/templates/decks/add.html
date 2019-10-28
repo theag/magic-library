@@ -20,11 +20,17 @@
             {% csrf_token %}
             <div>Deck Name</div>
             <div style="margin-top:10px"><input type="text" name="name" /></div>
-            <div style="margin-top:10px">Deck List</div>
-            <div style="margin-top:10px"><textarea name="list" cols="25" rows="20"></textarea></div>
-            <div style="margin-top:10px">Sideboard List</div>
-            <div style="margin-top:10px"><textarea name="sideboard" cols="25" rows="20"></textarea></div>
-            <div style="margin-top:10px">
+            <div style="float:left">
+                <div style="margin-top:10px">Deck List</div>
+                <div style="margin-top:10px"><textarea name="list" cols="25" rows="20"></textarea></div>
+                <div style="margin-top:10px">Sideboard List</div>
+                <div style="margin-top:10px"><textarea name="sideboard" cols="25" rows="20"></textarea></div>
+            </div>
+            <div style="float:left; margin-left: 10px">
+                <div style="margin-top:10px">Notes</div>
+                <div style="margin-top:10px"><textarea name="notes" cols="50" rows="10"></textarea></div>
+            </div>
+            <div style="padding-top:10px; clear:both">
                 <input type="submit" value="Save" />
                 <input type="button" value="Cancel" onclick="window.location.href='{% url 'decks:index' %}';" />
             </div>

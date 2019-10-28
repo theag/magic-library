@@ -4,6 +4,7 @@ from cards.models import Card,Type
 # Create your models here.
 class Deck(models.Model):
     name = models.CharField(max_length=200)
+    notes = models.TextField(blank=True)
     
     def deck_list(self):
         return self.deckcard_set.filter(count__gt=0).order_by('-commander','card__name')

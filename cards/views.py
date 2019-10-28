@@ -492,7 +492,7 @@ def add_json(request):
             if len(request.POST["name"]) > 0:
                 for name in cards.keys():
                     if name.lower().startswith(request.POST["name"].lower()):
-                        context["results"].append(name)
+                        context["results"].append(name.replace("'","&#39;"))
         elif action == "add" or action == "addp":
             for name in arrayGet(request,'cards',False):
                 c = Card(name=name,

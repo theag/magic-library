@@ -425,6 +425,9 @@
             </table>
             {% endif %}
             <div style="margin-top:10px">
+                <textarea name="notes" cols="50" rows="10">{{ deck.notes }}</textarea>
+            </div>
+            <div style="margin-top:10px">
                 <input type="button" onclick="doSubmit('update')" value="Update" />
                 <input type="button" onclick="doDelete()" value="Delete" />
             </div>
