@@ -293,6 +293,9 @@
         }
 
         function addToDeck() {
+            selectMenuItem('deckcombo',{{all_decks.0.id}},'{{all_decks.0.name}}');
+            document.getElementById("deck_count").value = 0;
+            document.getElementById("sideboard_count").value = 0;
             document.getElementById("addToDeck").style.display = "block";
         }
 
@@ -449,11 +452,11 @@
                 </div>
                 <div>
                     Count
-                    <input type="number" name="deck_count" value="0" min="0" style="width:100%" />
+                    <input type="number" name="deck_count" id="deck_count" value="0" min="0" style="width:100%" />
                 </div>
                 <div>
                     Sideboard
-                    <input type="number" name="sideboard_count" value="0" min="0" style="width:100%" />
+                    <input type="number" name="sideboard_count" id="sideboard_count" value="0" min="0" style="width:100%" />
                 </div>
                 <div>
                     <input type="checkbox" name="commander" id="chk2" />
