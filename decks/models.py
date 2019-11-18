@@ -4,7 +4,7 @@ from cards.models import Card,Type
 class DeckType(models.Model):
     name = models.CharField(max_length=200)
     sort_order = models.SmallIntegerField(default=0)
-    
+
     def sorted_decks(self):
         return self.deck_set.all().order_by("name")
 
