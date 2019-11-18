@@ -371,6 +371,24 @@
             document.getElementById(id).style.display = "block";
             tar.className += " active";
         }
+        
+        function hideAddCard() {
+            document.getElementById("divAddCard").style.display = "";
+            document.getElementById("txtCardName").value = "";
+            document.getElementById("numAddMain").value = "0";
+            document.getElementById("numAddSide").value = "0";
+        }
+        
+        function updateList(id, value) {
+            var hdn = document.getElementById("hdn" +id);
+            if(hdn.value != value) {
+                if(hdn.value != "") {
+                    document.getElementById(id+hdn.value).className = "";
+                }
+                document.getElementById(id+value).className = "selected";
+            }
+            hdn.value = value;
+        }
     </script>
 </head>
 <body onload="draw()">
@@ -391,7 +409,10 @@
             <label for="chk1">Show Only Missing</label>
             <label class="switch" style="top:-10px"><input type="checkbox" id="chk1" name="show_only_missing" {% if show_only_missing %}checked{% endif %} onchange="doSubmit('ui')" /><span class="slider"></span></label>
         </div>
-        <div style="float:left"><input type="button" onclick="doSubmit('sets')" value="Update Sets" /></div>
+        <div style="float:left">
+            <div><input type="button" value="Add Card" onclick="document.getElementById('divAddCard').style.display='block';" /></div>
+            <div style="margin-top:10px"><input type="button" onclick="doSubmit('sets')" value="Update Sets" /></div>
+        </div>
         <div style="margin-left:10px; float:left; padding-bottom: 10px">
             <div><input type="button" onclick="showDeckList(true)" value="Deck List" /></div>
             <div style="margin-top:10px"><input type="button" onclick="showDeckList(false)" value="Deck Need List" /></div>
@@ -524,6 +545,31 @@
             <input type="button" onclick="doSubmit('update')" value="Update" />
             <input type="button" onclick="doDelete()" value="Delete" />
         </div>
+        <div id="divAddCard" class="gray">
+            <div class="popup">
+                <div>Add Card</div>
+                <div>
+                    <input type="text" name="card_name" id="txtCardName" value="{{card_name}}" />
+                    <input type="button" value="Search" onclick="doSubmit('search')" />
+                </div>
+                <div>
+                    <input type="hidden" name="cards" id="hdncards" value="" />
+                    <ul id="cards" class="select" style="height: 240px; overflow-y:auto">
+                        {% for card in card_list %}
+                        <li id="cards{{card.id}}" onclick="updateList('cards','{{card.id}}')">{%autoescape off%}{{ card.name }}{%endautoescape%}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div>Main: <input type="number" name="add_main_count" id="numAddMain" value="{% if add_main_count %}{{add_main_count}}{% else %}0{% endif %}" min="0" style="width:100px"/></div>
+                <div>Sideboard: <input type="number" name="add_side_count" id="numAddSide" value="{% if add_side_count %}{{add_side_count}}{% else %}0{% endif %}" min="0" style="width:100px"/></div>
+                <div style="color:red">{{add_err}}</div>
+                <div>
+                    <input type="button" value="Add" onclick="doSubmit('add')" />
+                    <input type="button" value="Add+" onclick="doSubmit('add_plus')" />
+                    <input type="button" value="Cancel" onclick="hideAddCard()"/>
+                </div>
+            </div>
+        </div>
     </form>
     <div id="divDeckList" class="gray">
         <div class="popup" style="width:500px">
@@ -550,5 +596,12 @@
                 event.target.style.display = "";
             }
         }
+        {% if show_add %}document.getElementById('divAddCard').style.display='block';{% endif %}
+        document.getElementById("txtCardName").addEventListener("keyup",function(event) {
+            if(event.keyCode == 13) {
+                event.preventDefault();
+                doSubmit('search');
+            }
+        });
     </script>
 </body>

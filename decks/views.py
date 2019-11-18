@@ -222,6 +222,44 @@ def detail(request, deck_id):
                                             set = set[0]
                                         set.cards.add(c)
                                     break
+        elif action == "search":
+            context = {"card_name":request.POST["card_name"],"add_main_count":request.POST["add_main_count"],"add_side_count":request.POST["add_side_count"],"show_add":"show_add"}
+            if request.POST["card_name"] != "":
+                context["card_list"] = Card.objects.filter(name__startswith=request.POST["card_name"]).order_by('name')
+        elif action.startswith("add"):
+            if request.POST["add_main_count"] == "0" and request.POST["add_side_count"] == "0":
+                context = {"card_name":request.POST["card_name"],
+                    "add_main_count":request.POST["add_main_count"],
+                    "add_side_count":request.POST["add_side_count"],
+                    "add_err":"You must enter a value for either main or sideboard.",
+                    "show_add":"show_add"}
+                context["card_list"] = Card.objects.filter(name__startswith=request.POST["card_name"]).order_by('name')
+            else:
+                if "cards" in request.POST and request.POST["cards"] != "":
+                    c = Card.objects.get(pk=request.POST["cards"])
+                    dc = DeckCard.objects.filter(card=c,deck_id__exact=deck_id)
+                    if len(dc) > 0:
+                        context = {"card_name":request.POST["card_name"],
+                            "add_main_count":request.POST["add_main_count"],
+                            "add_side_count":request.POST["add_side_count"],
+                            "add_err":"{} is already in the deck.".format(c.name),
+                            "show_add":"show_add"}
+                        context["card_list"] = Card.objects.filter(name__startswith=request.POST["card_name"]).order_by('name')
+                    else:
+                        dc = DeckCard(card=c,deck=Deck.objects.get(pk=deck_id),count=request.POST["add_main_count"],sideboard_count=request.POST["add_side_count"])
+                        dc.save()
+                        if action == "add_plus":
+                            context = {"card_name":"",
+                                "add_main_count":0,
+                                "add_side_count":0,
+                                "show_add":"show_add"}
+                else:
+                    context = {"card_name":request.POST["card_name"],
+                        "add_main_count":request.POST["add_main_count"],
+                        "add_side_count":request.POST["add_side_count"],
+                        "add_err":"You must select a card.",
+                        "show_add":"show_add"}
+                    context["card_list"] = Card.objects.filter(name__startswith=request.POST["card_name"]).order_by('name')
     except KeyError:
         if 'show_only_missing' in request.session:
             if request.session['show_only_missing']:
