@@ -260,6 +260,8 @@ def detail(request, deck_id):
                         "add_err":"You must select a card.",
                         "show_add":"show_add"}
                     context["card_list"] = Card.objects.filter(name__startswith=request.POST["card_name"]).order_by('name')
+        elif action.startswith("sort"):
+            context = {"sort":int(action[4:])}
     except KeyError:
         if 'show_only_missing' in request.session:
             if request.session['show_only_missing']:
@@ -269,6 +271,8 @@ def detail(request, deck_id):
     else:
         context["decks"] = Deck.objects.all().order_by('name')
         context["deck"] = Deck.objects.get(pk=deck_id)
+    if "sort" not in context:
+        context["sort"] = 0
     context["deck_types"] = DeckType.objects.all().order_by('sort_order','name')
     if mobile(request):
         return render(request, 'decks/m_edit.html', context)

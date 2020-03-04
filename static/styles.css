@@ -164,3 +164,8 @@ input:checked + .slider:before {
     text-align: center;
     font-weight: bold;
 }
+
+a.plain {
+    color: black;
+    text-decoration: none;
+}

@@ -18,6 +18,14 @@ class Deck(models.Model):
 
     def deck_list(self):
         return self.deckcard_set.filter(count__gt=0).order_by('-commander','card__name')
+        
+    def deck_list_cmc(self):
+        unsorted_list = self.deckcard_set.filter(count__gt=0).all()
+        return sorted(unsorted_list, key = lambda t: t.card.cmc_num())
+        
+    def deck_list_type(self):
+        unsorted_list = self.deckcard_set.filter(count__gt=0).all()
+        return sorted(unsorted_list, key = lambda t: t.card.regular_types())
 
     def sidebord(self):
         return self.deckcard_set.filter(sideboard_count__gt=0).order_by('card__name')
