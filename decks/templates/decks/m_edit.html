@@ -530,6 +530,19 @@
                 </tr>
                 {% endfor %}
             </table>
+            <div style="margin-top:10px">Type Counts</div>
+            <table class="addBorder addPadding">
+                <tr>
+                    <th>Type</th>
+                    <th>Count</th>
+                </tr>
+                {% for key,value in deck.types.items %}
+                <tr>
+                    <td>{{key}}</td>
+                    <td>{{value}}</td>
+                </tr>
+                {% endfor %}
+            </table>
             <div style="margin-top:10px">Land ({{deck.land_count}})</div>
             <div style="border: 1px solid black; padding:2px">
                 {% for dc in deck.land %}

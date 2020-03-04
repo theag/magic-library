@@ -1,6 +1,8 @@
 from django.db import models
 from cards.models import Card,Type
 
+TYPE_LIST = ["Creature","Instant","Sorcery","Enchantment","Artifact"]
+
 class DeckType(models.Model):
     name = models.CharField(max_length=200)
     sort_order = models.SmallIntegerField(default=0)
@@ -123,6 +125,14 @@ class Deck(models.Model):
                             rv[lbl] += dc.count
                         else:
                             rv[lbl] = dc.count
+        return rv
+    
+    def types(self):
+        rv = dict.fromkeys(TYPE_LIST, 0)
+        for dc in self.deckcard_set.all():
+            for t in dc.card.types.all():
+                if t.name in rv:
+                    rv[t.name] += 1
         return rv
 
     def land(self):
