@@ -1,0 +1,38 @@
+{% load static %}
+<head>
+    <title>Knitting Counters</title>
+    <link href="{% static 'kstyles.css' %}" type="text/css" rel="stylesheet"></link>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script>
+        function doSubmit(action) {
+            document.getElementById("hdnAction").value = action;
+            document.getElementById("frmMain").submit();
+        }
+    </script>
+</head>
+<body>
+    <h1>Add New Project</h1>
+    <form id="frmMain" action="{% url 'knitting_counter:add' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" id="hdnAction" name="action" value="save" />
+        <ul class="ul-form">
+            {{form.as_ul}}
+        </ul>
+        <h2>Counters</h2>
+        <select name="counter_id" onchange="doSubmit('change')">
+            <option value=""{% if not counter_id %} selected{% endif %}></option>
+            <option value="-1"{% if counter_id == -1 %} selected{% endif %}>Add New Counter</option>
+            {% for c in counters %}
+            <option value="{{forloop.counter0}}"{% if counter_id == forloop.counter0 %} selected{% endif %}>{{c.name}}</option>
+            {% endfor %}
+        </select>
+        <input type="hidden" name="counters" value="{{cstr}}" />
+        {% if cform %}
+        <ul class="ul-form">
+            {{cform.as_ul}}
+        </ul>
+        <button type="button" class="button2" onclick="doSubmit('counter')">Save Counter</button>
+        {% endif %}
+        <div style="margin-top:10px"><button type="submit" class="button2">Save Project</button></div>
+    </form>
+</body>

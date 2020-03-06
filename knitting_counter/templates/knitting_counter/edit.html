@@ -1,0 +1,43 @@
+{% load static %}
+<head>
+    <title>Knitting Counters</title>
+    <link href="{% static 'styles.css' %}" type="text/css" rel="stylesheet"></link>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        .button1 {
+            background-color: #1976d2;
+            border: none;
+            color: white;
+            padding: 5px 5px;
+            border-radius: 8px;
+            text-align: center;
+            text-decoration: none;
+        }
+        
+        /* Rules for sizing the icon. */
+        .material-icons.md-18 { font-size: 18px; }
+        .material-icons.md-24 { font-size: 24px; }
+        .material-icons.md-36 { font-size: 36px; }
+        .material-icons.md-48 { font-size: 48px; }
+
+    </style>
+    <script>
+        function doSubmit(action) {
+            document.getElementById("hdnAction").value = action;
+            document.getElementById("frmMain").submit();
+        }
+    </script>
+</head>
+<body>
+    <form id="frmMain" action="{% url 'knitting_counter:edit' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" id="hdnAction" name="action" value="list" />
+        <button class="button1"><i class="material-icons md-36">add</i></button>
+        {% for p in projects %}
+        <div class="row">
+            <div>{{p.name}}</div>
+            <div><a class="button" href="javascript:doSubmit('delete{{p.id}}')"><i class="material-icons">delete</i></a></div>
+        </div>
+        {% endfor %}
+    </form>
+</body>
