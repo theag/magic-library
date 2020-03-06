@@ -38,7 +38,10 @@
         {% for p in projects %}
         <div class="row" onclick="window.location='{% url 'knitting_counter:use' p.id %}'">
             <div style="float:left">{{p.name}}</div>
-            <div style="float:right"><a class="button" href="javascript:doSubmit('delete{{p.id}}')"><i class="material-icons">delete</i></a></div>
+            <div style="float:right">
+                <a class="button" href="{% url 'knitting_counter:edit' p.id %}"><i class="material-icons">edit</i></a>
+                <a class="button" href="javascript:doSubmit('delete{{p.id}}')"><i class="material-icons">delete</i></a>
+            </div>
             <div style="clear:both"></div>
         </div>
         {% endfor %}

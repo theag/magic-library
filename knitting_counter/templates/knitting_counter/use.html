@@ -15,6 +15,7 @@
             if(current_counter != id) {
                 document.getElementById("display"+current_counter).style.display = "none";
                 document.getElementById("display"+id).style.display = "";
+                document.getElementById("hdnCurrentCounter").value = id;
                 current_counter = id;
             }
         }
@@ -93,6 +94,10 @@
     {% endfor %}
     <form id="frmMain" action="{% url 'knitting_counter:use' project.id %}" method="post">
         {% csrf_token %}
+        <button type="submit" class="button2">Save</button>
+        <button type="button" class="button2" onclick="doSubmit('save')">Save and Close</button>
+        <input type="hidden" id="hdnAction" name="action" value="save+" />
+        <input type="hidden" id="hdnCurrentCounter" name="current_counter" value="{{current_counter}}" />
         {% for c in project.counter_set.all %}
         <input type="hidden" id="hdnCount{{c.id}}" value="{{c.count}}" name="count-{{c.id}}" />
         <input type="hidden" id="hdnRepeat{{c.id}}" value="{{c.repeat_count}}" name="repeat_count-{{c.id}}" />
