@@ -107,6 +107,51 @@ def edit(request, project_id):
             elif request.POST['counter_id'] != "":
                 context['counter_id'] = int(request.POST['counter_id'])
                 context['cform'] = CounterForm(instance=Counter.objects.get(pk=context['counter_id']),prefix='counter')
+        elif action == 'counter':
+            cf = CounterForm(request.POST,prefix='counter')
+            if cf.is_valid():
+                if request.POST['counter_id'] == '-1':
+                    c = cf.save(commit=False)
+                    c.project = context['project']
+                    c.save()
+                elif request.POST['counter_id'] != "":
+                    cf.instance = Counter.objects.get(pk=request.POST['counter_id'])
+                    c = cf.save(commit=False)
+                    c.project = context['project']
+                    c.save()
+            else:
+                context['cform'] = cf
+                context['counter_id'] = int(request.POST['counter_id'])
+        elif action == 'dcounter':
+            Counter.objects.get(pk=request.POST['counter_id']).delete()
+        elif action == "save" or action == "use":
+            if request.POST['counter_id'] != "":
+                cf = CounterForm(request.POST,prefix='counter')
+                if cf.is_valid():
+                    if request.POST['counter_id'] == '-1':
+                        c = cf.save(commit=False)
+                        c.project = context['project']
+                        c.save()
+                    elif request.POST['counter_id'] != "":
+                        cf.instance = Counter.objects.get(pk=request.POST['counter_id'])
+                        c = cf.save(commit=False)
+                        c.project = context['project']
+                        c.save()
+                    if context['form'].is_valid():
+                        context['form'].save()
+                        if action == "save":
+                            return redirect('knitting_counter:index')
+                        else:
+                            return redirect('knitting_counter:use', project_id=project_id)
+                else:
+                    context['cform'] = cf
+                    context['counter_id'] = int(request.POST['counter_id'])
+            elif context['form'].is_valid():
+                context['form'].save()
+                if action == "save":
+                    return redirect('knitting_counter:index')
+                else:
+                    return redirect('knitting_counter:use', project_id=project_id)
     else:
         context['form'] = ProjectForm(instance=context['project'], prefix='project')
     return render(request, 'knitting_counter/edit.html', context)

@@ -31,7 +31,12 @@
             {{cform.as_ul}}
         </ul>
         <button type="button" class="button2" onclick="doSubmit('counter')">Save Counter</button>
+        {% if counter_id != -1 %}<button type="button" class="button2" onclick="doSubmit('dcounter')">Delete Counter</button>{% endif %}
         {% endif %}
-        <div style="margin-top:10px"><button type="submit" class="button2">Save Project</button></div>
+        <div style="margin-top:10px">
+            <button type="submit" class="button2">Save Project</button>
+            <button type="button" class="button2" onclick="doSubmit('use')">Save and Use Project</button>
+            <button type="button" class="button2" onclick="window.location='{% url 'knitting_counter:index' %}">Cancel</button>
+        </div>
     </form>
 </body>

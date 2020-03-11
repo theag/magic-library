@@ -62,7 +62,7 @@
     </script>
 </head>
 <body>
-    <h1>{{project.name}}</h1>
+    <h1>{{project.name}} <a href="{% url 'knitting_counter:edit' project.id %}" class="button"><i class="material-icons">edit</i></a></h1>
     {% for c in project.counter_set.all %}
     <div class="counter-display">
         <button type="button" onclick="changeCounter({{c.id}})" class="button5">{{c.name}}</button>
@@ -92,15 +92,17 @@
         </div>
     </div>
     {% endfor %}
-    <form id="frmMain" action="{% url 'knitting_counter:use' project.id %}" method="post">
-        {% csrf_token %}
-        <button type="submit" class="button2">Save</button>
-        <button type="button" class="button2" onclick="doSubmit('save')">Save and Close</button>
-        <input type="hidden" id="hdnAction" name="action" value="save+" />
-        <input type="hidden" id="hdnCurrentCounter" name="current_counter" value="{{current_counter}}" />
-        {% for c in project.counter_set.all %}
-        <input type="hidden" id="hdnCount{{c.id}}" value="{{c.count}}" name="count-{{c.id}}" />
-        <input type="hidden" id="hdnRepeat{{c.id}}" value="{{c.repeat_count}}" name="repeat_count-{{c.id}}" />
-        {% endfor %}
-    </form>
+    <div style="margin-top:10px">
+        <form id="frmMain" action="{% url 'knitting_counter:use' project.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="button2">Save</button>
+            <button type="button" class="button2" onclick="doSubmit('save')">Save and Close</button>
+            <input type="hidden" id="hdnAction" name="action" value="save+" />
+            <input type="hidden" id="hdnCurrentCounter" name="current_counter" value="{{current_counter}}" />
+            {% for c in project.counter_set.all %}
+            <input type="hidden" id="hdnCount{{c.id}}" value="{{c.count}}" name="count-{{c.id}}" />
+            <input type="hidden" id="hdnRepeat{{c.id}}" value="{{c.repeat_count}}" name="repeat_count-{{c.id}}" />
+            {% endfor %}
+        </form>
+    </div>
 </body>
