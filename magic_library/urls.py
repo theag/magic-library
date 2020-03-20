@@ -24,4 +24,5 @@ urlpatterns = [
     path('decks/', include('decks.urls')),
     path('admin/', admin.site.urls),
     path('knitting/',include('knitting_counter.urls')),
+    path('whiteboard/',include('whiteboard.urls')),
 ]

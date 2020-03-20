@@ -1,0 +1,14 @@
+{% load static %}
+<html>
+    <head>
+        <title>Whiteboards</title>
+        <link href="{% static 'styles.css' %}"  type="text/css" rel="stylesheet"></link>
+    </head>
+    <body>
+        <h1>Whiteboard {{board.name}}</h1>
+        <a href="{% url 'whiteboard:index' %}">Home</a>
+        <div style="margin-top:10px">
+            <canvas width="{{board.width}}" height="{{board.height}}" style="border:1px solid black"></canvas>
+        </div>
+    </body>
+</html>

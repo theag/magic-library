@@ -1,0 +1,16 @@
+{% load static %}
+<html>
+    <head>
+        <title>Whiteboards</title>
+        <link href="{% static 'styles.css' %}"  type="text/css" rel="stylesheet"></link>
+    </head>
+    <body>
+        <h1>Whiteboards</h1>
+        <ul style="list-style-type:none">
+            {% for b in boards %}
+            <li><a href="{% url 'whiteboard:use' b.id %}">{{ b.name }}</a></li>
+            {% endfor %}
+        </ul>
+        <input type="button" value="Add New Whiteboard" onclick="window.location='{% url 'whiteboard:add' %}';" />
+    </body>
+</html>
