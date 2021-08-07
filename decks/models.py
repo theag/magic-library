@@ -145,18 +145,20 @@ class Deck(models.Model):
 
     def land(self):
         rv = []
-        land_type = Type.objects.filter(typeType=3,name__iexact="land")[0]
-        for dc in self.deckcard_set.all().order_by("card__name"):
-            if dc.card.types.filter(pk=land_type.id).exists():
-                rv.append(dc)
+        if len(self.deckcard_set.all()) > 0:
+            land_type = Type.objects.filter(typeType=3,name__iexact="land")[0]
+            for dc in self.deckcard_set.all().order_by("card__name"):
+                if dc.card.types.filter(pk=land_type.id).exists():
+                    rv.append(dc)
         return rv
 
     def land_count(self):
         rv = 0
-        land_type = Type.objects.filter(typeType=3,name__iexact="land")[0]
-        for dc in self.deckcard_set.all().order_by("card__name"):
-            if dc.card.types.filter(pk=land_type.id).exists():
-                rv += dc.count
+        if len(self.deckcard_set.all()) > 0:
+            land_type = Type.objects.filter(typeType=3,name__iexact="land")[0]
+            for dc in self.deckcard_set.all().order_by("card__name"):
+                if dc.card.types.filter(pk=land_type.id).exists():
+                    rv += dc.count
         return rv
 
 

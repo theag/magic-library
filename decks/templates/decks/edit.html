@@ -294,6 +294,7 @@
         function showDeckList(showAll) {
             var txt = "";
             var tempText;
+            {% if dc.deck_list.len > 0 %}
             if(document.getElementById("chkBySet").checked) {
                 {% for key, value in deck.deck_set_list.items %}
                 tempText = "";
@@ -339,6 +340,7 @@
                 {% endfor %}
                 {% endif %}
             }
+            {% endif %}
             document.getElementById("txtDeckList").value = txt;
             document.getElementById("divDeckList").style.display = "block";
         }

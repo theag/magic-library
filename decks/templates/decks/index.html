@@ -144,9 +144,11 @@
         <li class="dropdown">
             <a href="javascript:void(0)" class="dropbtn">{{ dt.name }}</a>
             <div class="dropdown-content">
+                {% if dt.sorted_decks.len > 0 %}
                 {% for d in dt.sorted_decks %}
                 <a href="{% url 'decks:deck' d.id %}">{{d.name}}</a>
                 {% endfor %}
+                {% endif %}
             </div>
         </li>
         {% endfor %}

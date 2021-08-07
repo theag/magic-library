@@ -52,7 +52,10 @@ def add(request):
         if len(name) > 0:
             d = Deck(name=name,notes=request.POST['notes'],deckType=DeckType.objects.get(pk=int(request.POST['deckType'])))
             d.save()
-            p = re.compile("(\\d+)x (.+)")
+            if request.POST['inputType'] == "X":
+                p = re.compile("(\\d+)x (.+)")
+            else:
+                p = re.compile("(\\d+) (.+)")
             issue_list = []
             cards = None
             if len(request.POST['list'].strip().replace('\r\n','\n')) != 0:
@@ -63,7 +66,6 @@ def add(request):
                 total = main + request.POST['sideboard'].strip().replace('\r\n','\n').split('\n')
             else:
                 total = main
-            print(total)
             for i,line in enumerate(total):
                 m = p.match(line.strip())
                 if m is None:

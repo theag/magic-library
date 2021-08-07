@@ -24,7 +24,10 @@
                 {% for dt in deck_types %}<input type="radio" value="{{dt.id}}" name="deckType" id="rdo{{forloop.counter}}" {% if forloop.counter == 1 %}checked{% endif %}/><label for="rdo{{forloop.counter}}">{{dt.name}}</label>{% endfor %}
             </div>
             <div style="margin-top:20px">Deck List</div>
-            <div style="font-size:small">&lt;count&gt;x &lt;card name&gt;</card></div>
+            <div style="font-size:small">
+                <input type="radio" name="inputType" id="input1" checked value="X"><label for="input1">&lt;count&gt;x &lt;card name&gt;</label>
+                    <input type="radio" name="inputType" id="input2" value="plain"><label for="input2">&lt;count&gt; &lt;card name&gt;</label>
+            </div>
             <div style="margin-top:10px"><textarea name="list" cols="25" rows="20"></textarea></div>
             <div style="margin-top:10px">Sideboard List</div>
             <div style="margin-top:10px"><textarea name="sideboard" cols="25" rows="20"></textarea></div>
