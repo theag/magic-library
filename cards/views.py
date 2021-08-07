@@ -431,7 +431,7 @@ def edit(request, card_id):
                             t = t[0]
                         c.types.add(t)
         elif action == "sets":
-            f = open(os.path.join(settings.BASE_DIR, 'SetList.json'),'r')
+            f = open(os.path.join(settings.BASE_DIR, 'SetList.json'),'r',encoding='utf8')
             sets = json.load(f)["data"]
             f.close()
             f = open(os.path.join(settings.BASE_DIR, 'AtomicCards.json'),'r',encoding='utf8')
@@ -492,7 +492,10 @@ def add_json(request):
             if len(request.POST["name"]) > 0:
                 for name in cards.keys():
                     if name.lower().startswith(request.POST["name"].lower()):
-                        context["results"].append(name.replace("'","&#39;"))
+                        if len(Card.objects.filter(name=name)) > 0:
+                            context["results"].append(name.replace("'","&#39;")+" *")
+                        else:
+                            context["results"].append(name.replace("'","&#39;"))
         elif action == "add" or action == "addp":
             for name in arrayGet(request,'cards',False):
                 c = Card(name=name,
@@ -539,7 +542,7 @@ def add_json(request):
                             t = t[0]
                         c.types.add(t)
                 #sets
-                f = open(os.path.join(settings.BASE_DIR, 'SetList.json'),'r')
+                f = open(os.path.join(settings.BASE_DIR, 'SetList.json'),'r',encoding='utf8')
                 sets = json.load(f)["data"]
                 f.close()
                 if "printings" in cards[name][0]:

@@ -123,7 +123,7 @@ def add(request):
                                         t = t[0]
                                     c.types.add(t)
                             #sets
-                            f = open(os.path.join(settings.BASE_DIR, 'SetList.json'),'r')
+                            f = open(os.path.join(settings.BASE_DIR, 'SetList.json'),'r',encoding='utf8')
                             sets = json.load(f)["data"]
                             f.close()
                             if "printings" in cards[m.groups()[1]][0]:
@@ -200,7 +200,7 @@ def detail(request, deck_id):
             else:
                 request.session['show_only_missing'] = False
         elif action == 'sets':
-            f = open(os.path.join(settings.BASE_DIR, 'SetList.json'),'r')
+            f = open(os.path.join(settings.BASE_DIR, 'SetList.json'),'r',encoding='utf8')
             sets = json.load(f)["data"]
             f.close()
             f = open(os.path.join(settings.BASE_DIR, 'AtomicCards.json'),'r',encoding='utf8')
