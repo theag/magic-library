@@ -424,10 +424,10 @@ def edit(request, card_id):
                         c.types.add(t)
         elif action == "sets":
             f = open(os.path.join(settings.BASE_DIR, 'SetList.json'),'r')
-            sets = json.load(f)
+            sets = json.load(f)["data"]
             f.close()
-            f = open(os.path.join(settings.BASE_DIR, 'AllCards.json'),'r',encoding='utf8')
-            cards = json.load(f)
+            f = open(os.path.join(settings.BASE_DIR, 'AtomicCards.json'),'r',encoding='utf8')
+            cards = json.load(f)["data"]
             f.close()
             if c.name in cards:
                 jc = cards[c.name]
@@ -474,8 +474,8 @@ def add_json(request):
     context = {"decks":Deck.objects.all().order_by("name"),"deck_choices":[]}
     try:
         action = request.POST['action']
-        f = open(os.path.join(settings.BASE_DIR, 'AllCards.json'),'r',encoding='utf8')
-        cards = json.load(f)
+        f = open(os.path.join(settings.BASE_DIR, 'AtomicCards.json'),'r',encoding='utf8')
+        cards = json.load(f)["data"]
         f.close()
         if action == "search":
             context = {"results":[],"name":request.POST["name"],"notes":request.POST["notes"],"decks":Deck.objects.all().order_by("name"),"deck_choices":json.loads(request.POST['deck_choices'])}
@@ -530,7 +530,7 @@ def add_json(request):
                         c.types.add(t)
                 #sets
                 f = open(os.path.join(settings.BASE_DIR, 'SetList.json'),'r')
-                sets = json.load(f)
+                sets = json.load(f)["data"]
                 f.close()
                 if "printings" in cards[name]:
                     for code in cards[name]["printings"]:

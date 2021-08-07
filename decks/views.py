@@ -42,8 +42,8 @@ def add(request):
                     if len(c) == 0:
                         #try json
                         if cards is None:
-                            f = open(os.path.join(settings.BASE_DIR, 'AllCards.json'),'r',encoding='utf8')
-                            cards = json.load(f)
+                            f = open(os.path.join(settings.BASE_DIR, 'AtomicCards.json'),'r',encoding='utf8')
+                            cards = json.load(f)["data"]
                             f.close()
                         if m.groups()[1] in cards:
                             c = Card(name=m.groups()[1],
@@ -91,7 +91,7 @@ def add(request):
                                     c.types.add(t)
                             #sets
                             f = open(os.path.join(settings.BASE_DIR, 'SetList.json'),'r')
-                            sets = json.load(f)
+                            sets = json.load(f)["data"]
                             f.close()
                             if "printings" in cards[m.groups()[1]]:
                                 for code in cards[m.groups()[1]]["printings"]:
@@ -157,10 +157,10 @@ def detail(request, deck_id):
                 request.session['show_only_missing'] = False
         elif action == 'sets':
             f = open(os.path.join(settings.BASE_DIR, 'SetList.json'),'r')
-            sets = json.load(f)
+            sets = json.load(f)["data"]
             f.close()
-            f = open(os.path.join(settings.BASE_DIR, 'AllCards.json'),'r',encoding='utf8')
-            cards = json.load(f)
+            f = open(os.path.join(settings.BASE_DIR, 'AtomicCards.json'),'r',encoding='utf8')
+            cards = json.load(f)["data"]
             f.close()
             for dc in Deck.objects.get(pk=deck_id).deckcard_set.all():
                 c = dc.card
