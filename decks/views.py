@@ -78,23 +78,23 @@ def add(request):
                             f.close()
                         if m.groups()[1] in cards:
                             c = Card(name=m.groups()[1],
-                                text=cards[m.groups()[1]]['text'],
+                                text=cards[m.groups()[1]][0]['text'],
                                 notes="",
                                 addMana=False)
                             #mana cost
-                            if "manaCost" in cards[m.groups()[1]]:
-                                c.manaCost = cards[m.groups()[1]]['manaCost'].replace('}{',',').replace('{','').replace('}','').replace('/','')
+                            if "manaCost" in cards[m.groups()[1]][0]:
+                                c.manaCost = cards[m.groups()[1]][0]['manaCost'].replace('}{',',').replace('{','').replace('}','').replace('/','')
                             #ptl
-                            if "power" in cards[m.groups()[1]]:
-                                c.power = cards[m.groups()[1]]["power"]
-                            if "toughness" in cards[m.groups()[1]]:
-                                c.toughness = cards[m.groups()[1]]["toughness"]
-                            if "loyalty" in cards[m.groups()[1]]:
-                                c.loyalty = cards[m.groups()[1]]["loyalty"]
+                            if "power" in cards[m.groups()[1]][0]:
+                                c.power = cards[m.groups()[1]][0]["power"]
+                            if "toughness" in cards[m.groups()[1]][0]:
+                                c.toughness = cards[m.groups()[1]][0]["toughness"]
+                            if "loyalty" in cards[m.groups()[1]][0]:
+                                c.loyalty = cards[m.groups()[1]][0]["loyalty"]
                             c.save()
                             #types
-                            if "supertypes" in cards[m.groups()[1]]:
-                                for type in cards[m.groups()[1]]['supertypes']:
+                            if "supertypes" in cards[m.groups()[1]][0]:
+                                for type in cards[m.groups()[1]][0]['supertypes']:
                                     t = Type.objects.filter(name__exact=type,typeType__exact=2)
                                     if len(t) == 0:
                                         t = Type(name=type,typeType=2)
@@ -102,8 +102,8 @@ def add(request):
                                     else:
                                         t = t[0]
                                     c.types.add(t)
-                            if "types" in cards[m.groups()[1]]:
-                                for type in cards[m.groups()[1]]['types']:
+                            if "types" in cards[m.groups()[1]][0]:
+                                for type in cards[m.groups()[1]][0]['types']:
                                     t = Type.objects.filter(name__exact=type,typeType__exact=3)
                                     if len(t) == 0:
                                         t = Type(name=type,typeType=3)
@@ -111,8 +111,8 @@ def add(request):
                                     else:
                                         t = t[0]
                                     c.types.add(t)
-                            if "subtypes" in cards[m.groups()[1]]:
-                                for type in cards[m.groups()[1]]['subtypes']:
+                            if "subtypes" in cards[m.groups()[1]][0]:
+                                for type in cards[m.groups()[1]][0]['subtypes']:
                                     t = Type.objects.filter(name__exact=type,typeType__exact=1)
                                     if len(t) == 0:
                                         t = Type(name=type,typeType=1)
@@ -124,8 +124,8 @@ def add(request):
                             f = open(os.path.join(settings.BASE_DIR, 'SetList.json'),'r')
                             sets = json.load(f)["data"]
                             f.close()
-                            if "printings" in cards[m.groups()[1]]:
-                                for code in cards[m.groups()[1]]["printings"]:
+                            if "printings" in cards[m.groups()[1]][0]:
+                                for code in cards[m.groups()[1]][0]["printings"]:
                                     for jset in sets:
                                         if jset["code"] == code:
                                             if jset["type"] not in bad_set_types:

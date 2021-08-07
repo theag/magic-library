@@ -438,7 +438,7 @@ def edit(request, card_id):
             cards = json.load(f)["data"]
             f.close()
             if c.name in cards:
-                jc = cards[c.name]
+                jc = cards[c.name][0]
                 c.set_set.clear()
                 if "printings" in jc:
                     for code in jc["printings"]:
@@ -496,23 +496,23 @@ def add_json(request):
         elif action == "add" or action == "addp":
             for name in arrayGet(request,'cards',False):
                 c = Card(name=name,
-                    text=cards[name]['text'],
+                    text=cards[name][0]['text'],
                     notes=request.POST['notes'],
                     addMana=False)
                 #mana cost
-                if "manaCost" in cards[name]:
-                    c.manaCost = cards[name]['manaCost'].replace('}{',',').replace('{','').replace('}','').replace('/','')
+                if "manaCost" in cards[name][0]:
+                    c.manaCost = cards[name][0]['manaCost'].replace('}{',',').replace('{','').replace('}','').replace('/','')
                 #ptl
-                if "power" in cards[name]:
-                    c.power = cards[name]["power"]
-                if "toughness" in cards[name]:
-                    c.toughness = cards[name]["toughness"]
-                if "loyalty" in cards[name]:
-                    c.loyalty = cards[name]["loyalty"]
+                if "power" in cards[name][0]:
+                    c.power = cards[name][0]["power"]
+                if "toughness" in cards[name][0]:
+                    c.toughness = cards[name][0]["toughness"]
+                if "loyalty" in cards[name][0]:
+                    c.loyalty = cards[name][0]["loyalty"]
                 c.save()
                 #types
-                if "supertypes" in cards[name]:
-                    for type in cards[name]['supertypes']:
+                if "supertypes" in cards[name][0]:
+                    for type in cards[name][0]['supertypes']:
                         t = Type.objects.filter(name__exact=type,typeType__exact=2)
                         if len(t) == 0:
                             t = Type(name=type,typeType=2)
@@ -520,8 +520,8 @@ def add_json(request):
                         else:
                             t = t[0]
                         c.types.add(t)
-                if "types" in cards[name]:
-                    for type in cards[name]['types']:
+                if "types" in cards[name][0]:
+                    for type in cards[name][0]['types']:
                         t = Type.objects.filter(name__exact=type,typeType__exact=3)
                         if len(t) == 0:
                             t = Type(name=type,typeType=3)
@@ -529,8 +529,8 @@ def add_json(request):
                         else:
                             t = t[0]
                         c.types.add(t)
-                if "subtypes" in cards[name]:
-                    for type in cards[name]['subtypes']:
+                if "subtypes" in cards[name][0]:
+                    for type in cards[name][0]['subtypes']:
                         t = Type.objects.filter(name__exact=type,typeType__exact=1)
                         if len(t) == 0:
                             t = Type(name=type,typeType=1)
@@ -542,8 +542,8 @@ def add_json(request):
                 f = open(os.path.join(settings.BASE_DIR, 'SetList.json'),'r')
                 sets = json.load(f)["data"]
                 f.close()
-                if "printings" in cards[name]:
-                    for code in cards[name]["printings"]:
+                if "printings" in cards[name][0]:
+                    for code in cards[name][0]["printings"]:
                         for jset in sets:
                             if jset["code"] == code:
                                 if jset["type"] not in bad_set_types:
