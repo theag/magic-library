@@ -501,7 +501,7 @@ def add_json(request):
                 c = Card(name=name,
                     text=cards[name][0]['text'],
                     notes=request.POST['notes'],
-                    addMana=False)
+                    addMana=False,count=request.POST['own_count'])
                 #mana cost
                 if "manaCost" in cards[name][0]:
                     c.manaCost = cards[name][0]['manaCost'].replace('}{',',').replace('{','').replace('}','').replace('/','')
