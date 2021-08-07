@@ -1,19 +1,38 @@
 from django.db import models
 from cards.models import Card,Type
 
-# Create your models here.
+TYPE_LIST = ["Creature","Instant","Sorcery","Enchantment","Artifact"]
+
+class DeckType(models.Model):
+    name = models.CharField(max_length=200)
+    sort_order = models.SmallIntegerField(default=0)
+
+    def sorted_decks(self):
+        return self.deck_set.all().order_by("name")
+
+
 class Deck(models.Model):
     name = models.CharField(max_length=200)
-    
+    deckType = models.ForeignKey(DeckType,on_delete=models.CASCADE)
+    notes = models.TextField(blank=True)
+
     def deck_list(self):
         return self.deckcard_set.filter(count__gt=0).order_by('-commander','card__name')
         
+    def deck_list_cmc(self):
+        unsorted_list = self.deckcard_set.filter(count__gt=0).all()
+        return sorted(unsorted_list, key = lambda t: t.card.cmc_num())
+        
+    def deck_list_type(self):
+        unsorted_list = self.deckcard_set.filter(count__gt=0).all()
+        return sorted(unsorted_list, key = lambda t: t.card.regular_types())
+
     def sidebord(self):
         return self.deckcard_set.filter(sideboard_count__gt=0).order_by('card__name')
-    
+
     def card_count(self):
         return self.deckcard_set.all().aggregate(models.Sum('count'))['count__sum']
-    
+
     def mana_curve(self):
         rv = [0]
         for dc in self.deckcard_set.filter(count__gt=0):
@@ -23,13 +42,13 @@ class Deck(models.Model):
                     rv.append(0)
                 rv[ind] += dc.count
         return rv
-        
+
     def sideboard(self):
         return self.deckcard_set.filter(sideboard_count__gt=0).order_by('card__name')
-        
+
     def sideboard_count(self):
         return self.deckcard_set.all().aggregate(models.Sum('sideboard_count'))['sideboard_count__sum']
-    
+
     def deck_set_list(self):
         basic = Type.objects.filter(typeType=2,name__iexact="basic")[0]
         rv = {}
@@ -51,7 +70,7 @@ class Deck(models.Model):
                     else:
                         rv[set.name] = [dc]
         return rv
-    
+
     def card_colours(self):
         rv = {}
         for dc in self.deckcard_set.filter(count__gt=0):
@@ -81,7 +100,7 @@ class Deck(models.Model):
                 else:
                     rv[lbl] = dc.count
         return rv
-    
+
     def card_dots(self):
         rv = {}
         for dc in self.deckcard_set.filter(count__gt=0):
@@ -116,6 +135,14 @@ class Deck(models.Model):
                             rv[lbl] = dc.count
         return rv
     
+    def types(self):
+        rv = dict.fromkeys(TYPE_LIST, 0)
+        for dc in self.deckcard_set.all():
+            for t in dc.card.types.all():
+                if t.name in rv:
+                    rv[t.name] += 1
+        return rv
+
     def land(self):
         rv = []
         land_type = Type.objects.filter(typeType=3,name__iexact="land")[0]
@@ -123,7 +150,7 @@ class Deck(models.Model):
             if dc.card.types.filter(pk=land_type.id).exists():
                 rv.append(dc)
         return rv
-    
+
     def land_count(self):
         rv = 0
         land_type = Type.objects.filter(typeType=3,name__iexact="land")[0]
@@ -131,7 +158,7 @@ class Deck(models.Model):
             if dc.card.types.filter(pk=land_type.id).exists():
                 rv += dc.count
         return rv
-            
+
 
 class DeckCard(models.Model):
     card = models.ForeignKey(Card,on_delete=models.CASCADE)
@@ -139,4 +166,3 @@ class DeckCard(models.Model):
     deck = models.ForeignKey(Deck,on_delete=models.CASCADE)
     commander = models.BooleanField(default=False)
     sideboard_count = models.SmallIntegerField(default=0)
-    

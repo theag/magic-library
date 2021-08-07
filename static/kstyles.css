@@ -1,0 +1,101 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 8px;
+}
+
+.button1 {
+    background-color: #1976d2;
+    border: none;
+    color: white;
+    padding: 5px 5px;
+    border-radius: 8px;
+    text-align: center;
+    text-decoration: none;
+}
+
+.button2 {
+    background-color: #1976d2;
+    border: none;
+    color: white;
+    padding: 5px 5px;
+    font-size: 16px;
+    border-radius: 8px;
+    text-align: center;
+    text-decoration: none;
+}
+
+.button3 {
+    background-color: #1976d2;
+    border: none;
+    color: white;
+    padding: 5px 5px;
+    font-size: 16px;
+    text-align: center;
+    text-decoration: none;
+    display: block;
+}
+
+.button4 {
+    background-color: #1976d2;
+    border: none;
+    color: white;
+    padding: 50px 20px;
+    text-align: center;
+    border-radius: 8px;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.button5 {
+    background-color: #62a3ff;
+    border: none;
+    color: white;
+    padding: 5px 5px;
+    font-size: 16px;
+    text-align: center;
+    text-decoration: none;
+    display: block;
+    width: 100%;
+    margin: 0;
+}
+
+.row {
+    border: 1px solid #1976d2;
+    border-radius: 8px;
+    padding: 10px;
+    margin: 10px;
+    width: 50%;
+}
+
+a.button {
+    color: #1976d2;
+    padding: 2px 2px;
+    text-align: center;
+    text-decoration: none;
+}
+
+.ul-form, .ul-form ul {
+    list-style-type: none;
+}
+
+.ul-form .errorlist {
+    color: red;
+}
+
+.ul-form > li {
+    padding-top: 5px;
+}
+
+.counter-display {
+    border: 1px solid #62a3ff;
+}
+
+.counter-display td {
+    color: #004a9f;
+}
+
+/* Rules for sizing the icon. */
+.material-icons.md-18 { font-size: 18px; }
+.material-icons.md-24 { font-size: 24px; }
+.material-icons.md-36 { font-size: 36px; }
+.material-icons.md-48 { font-size: 48px; }

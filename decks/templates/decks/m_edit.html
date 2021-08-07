@@ -7,11 +7,11 @@
         .addBorder {
             border-collapse: collapse;
         }
-        
+
         .addBorder, .addBorder td, .addBorder th {
             border: 1px solid black;
         }
-        
+
         .addPadding td, .addPadding th {
             padding: 2px;
         }
@@ -26,11 +26,204 @@
                 doSubmit("delete");
             }
         }
-        
+
+        function ShowCardPopup(name, mana, superTypes, types, subTypes, text, plt, colours) {
+            var namDiv = document.getElementById("divName");
+            var div = document.getElementById("divCardPopup");
+            if(namDiv.childNodes.length == 0 || namDiv.childNodes[0].textContent != name) {
+                var bg = "LightGray";
+                if(superTypes.indexOf("Basic") >= 0) {
+                    switch(name) {
+                        case "Plains":
+                            bg = "white";
+                            break;
+                        case "Island":
+                            bg = "DodgerBlue";
+                            break;
+                        case "Swamp":
+                            bg = "RebeccaPurple";
+                            break;
+                        case "Mountain":
+                            bg = "FireBrick";
+                            break;
+                        case "Forest":
+                            bg = "SeaGreen";
+                            break;
+                    }
+                } else if(types.indexOf("Land") >= 0) {
+                    bg = "BurlyWood";
+                } else if(types.indexOf("Artifact") < 0) {
+                    bg = "Gold";
+                    switch(colours) {
+                        case 1:
+                            bg = "white";
+                            break;
+                        case 2:
+                            bg = "DodgerBlue";
+                            break;
+                        case 4:
+                            bg = "RebeccaPurple";
+                            break;
+                        case 8:
+                            bg = "FireBrick";
+                            break;
+                        case 16:
+                            bg = "SeaGreen";
+                            break;
+                    }
+                }
+                div.firstElementChild.style.backgroundColor = bg;
+                namDiv.innerText = name;
+                var manaDiv = document.getElementById("divMana");
+                while(manaDiv.childElementCount > 0) {
+                    manaDiv.removeChild(manaDiv.lastElementChild);
+                }
+                if(mana != "") {
+                    var manaArr = mana.split(",");
+                    var img, div1, div2;
+                    for(var i = 0; i < manaArr.length; i++) {
+                        if(isNaN(manaArr[i]) && manaArr[i] != "X") {
+                            img = document.createElement("IMG");
+                            if(manaArr[i].length == 1) {
+                                switch(manaArr[i].charAt(0)) {
+                                    case "W":
+                                        img.src = "{% static 'white.png' %}";
+                                        break;
+                                    case "U":
+                                        img.src = "{% static 'blue.png' %}";
+                                        break;
+                                    case "B":
+                                        img.src = "{% static 'black.png' %}";
+                                        break;
+                                    case "R":
+                                        img.src = "{% static 'red.png' %}";
+                                        break;
+                                    case "G":
+                                        img.src = "{% static 'green.png' %}";
+                                        break;
+                                }
+                                if(i > 0) {
+                                    img.style.marginLeft = "5px";
+                                }
+                                manaDiv.appendChild(img);
+                            } else if(manaArr[i].charAt(1) == "P") {
+                                switch(manaArr[i].charAt(0)) {
+                                    case "W":
+                                        img.src = "{% static 'p_white.png' %}";
+                                        break;
+                                    case "U":
+                                        img.src = "{% static 'p_blue.png' %}";
+                                        break;
+                                    case "B":
+                                        img.src = "{% static 'p_black.png' %}";
+                                        break;
+                                    case "R":
+                                        img.src = "{% static 'p_red.png' %}";
+                                        break;
+                                    case "G":
+                                        img.src = "{% static 'p_green.png' %}";
+                                        break;
+                                }
+                                if(i > 0) {
+                                    img.style.marginLeft = "5px";
+                                }
+                                manaDiv.appendChild(img);
+                            } else {
+                                div1 = document.createElement("DIV");
+                                div1.style.position = "relative";
+                                div1.style.display = "inline-block";
+                                switch(manaArr[i].charAt(0)) {
+                                    case "W":
+                                        img.src = "{% static 'white.png' %}";
+                                        break;
+                                    case "U":
+                                        img.src = "{% static 'blue.png' %}";
+                                        break;
+                                    case "B":
+                                        img.src = "{% static 'black.png' %}";
+                                        break;
+                                    case "R":
+                                        img.src = "{% static 'red.png' %}";
+                                        break;
+                                    case "G":
+                                        img.src = "{% static 'green.png' %}";
+                                        break;
+                                }
+                                div1.appendChild(img);
+                                img = document.createElement("IMG");
+                                img.style.position = "absolute";
+                                img.style.top = "50%";
+                                img.style.left = "50%";
+                                img.style.transform = "translate(-50%,-50%)";
+                                switch(manaArr[i].charAt(1)) {
+                                    case "W":
+                                        img.src = "{% static 'h_white.png' %}";
+                                        break;
+                                    case "U":
+                                        img.src = "{% static 'h_blue.png' %}";
+                                        break;
+                                    case "B":
+                                        img.src = "{% static 'h_black.png' %}";
+                                        break;
+                                    case "R":
+                                        img.src = "{% static 'h_red.png' %}";
+                                        break;
+                                    case "G":
+                                        img.src = "{% static 'h_green.png' %}";
+                                        break;
+                                }
+                                div1.appendChild(img);
+                                if(i > 0) {
+                                    div1.style.marginLeft = "5px";
+                                }
+                                manaDiv.appendChild(div1);
+                            }
+
+                        } else {
+                            div1 = document.createElement("DIV");
+                            div1.style.position = "relative";
+                            div1.style.display = "inline-block";
+                            img = document.createElement("IMG");
+                            img.src = "{% static 'gray.png' %}";
+                            div1.appendChild(img);
+                            div2 = document.createElement("DIV");
+                            div2.style.position = "absolute";
+                            div2.style.top = "50%";
+                            div2.style.left = "50%";
+                            div2.style.transform = "translate(-50%,-50%)";
+                            div2.appendChild(document.createTextNode(manaArr[i]));
+                            div1.appendChild(div2);
+                            manaDiv.appendChild(div1);
+                        }
+                    }
+                }
+                var ts = superTypes;
+                if(ts.length > 0) {
+                    ts += " ";
+                }
+                ts += types;
+                if(subTypes.length > 0) {
+                    ts += " &mdash; " +subTypes;
+                }
+                document.getElementById("divType").innerHTML = ts;
+                document.getElementById("divText").innerHTML = text.replace(/&amp;quot;/g,"\"").replace(/\n/g,"<br/>");;
+                document.getElementById("divPTL").innerText = plt;
+            }
+            if(div.style.display == "") {
+                div.style.display = "block";
+            }
+        }
+
+        function HideCardPopup() {
+            document.getElementById("divCardPopup").style.display = "";
+        }
+
         function draw() {
             if(sessionStorage.getItem("currentTab")) {
                 var arr = JSON.parse(sessionStorage.getItem("currentTab"));
-                showTab(document.getElementById(arr[0]),arr[1]);
+                if(arr[0] == {{deck.id}}) {
+                    showTab(document.getElementById(arr[1]),arr[2]);
+                }
             }
             var curve = [{% for val in deck.mana_curve %}{{val}},{% endfor %}];
             var max = Math.max(...curve);
@@ -102,7 +295,7 @@
                 }
             }
         }
-        
+
         function showDeckList(showAll) {
             var txt = "";
             var tempText;
@@ -110,13 +303,13 @@
                 {% for key, value in deck.deck_set_list.items %}
                 tempText = "";
                 {% for dc in value %}
-                if(showAll || {{dc.card.count}} < {{dc.count}}) {
+                if(showAll || {{dc.card.count}} < {{dc.count}} || {{dc.card.count}} < ({{dc.sideboard_count}}+{{dc.count}})) {
                     if(showAll) {
-                        tempText += "\n    {{dc.count}}x ";
+                        tempText += "\n    {% if dc.count > 0 %}{{dc.count}}x {% endif %}{% if dc.sideboard_count > 0%}{{dc.sideboard_count}}s {% endif %}";
                     } else {
-                        tempText += "\n    " +({{dc.count}} - {{dc.card.count}}) +"x ";
+                        tempText += "\n    " {% if dc.count > 0 %}+({{dc.count}} - {{dc.card.count}}) +"x "{% endif %}{% if dc.sideboard_count > 0 %}+({{dc.sideboard_count}} - ({{dc.card.count}}-{{dc.count}})) +"s "{% endif %};
                     }
-                    tempText += "{{dc.card.name}}{% if dc.card.set_set.count > 1%} (M){% endif %}";
+                    tempText += "{% autoescape off %}{{dc.card.name}}{% endautoescape %}{% if dc.card.set_set.count > 1%} (M){% endif %}";
                 }
                 {% endfor %}
                 if(tempText.length > 0) {
@@ -134,21 +327,34 @@
                     } else {
                         txt += ({{dc.count}} - {{dc.card.count}}) +"x ";
                     }
-                    txt += "{{dc.card.name}}\n";
+                    txt += "{% autoescape off %}{{dc.card.name}}{% endautoescape %}\n";
                 }
                 {% endfor %}
+                {% if deck.sideboard %}
+                txt += "SIDEBOARD\n";
+                {% for dc in deck.sideboard %}
+                if(showAll || {{dc.card.count}} < ({{dc.sideboard_count}}+{{dc.count}})) {
+                    if(showAll) {
+                        txt += "{{dc.sideboard_count}}x ";
+                    } else {
+                        txt += ({{dc.sideboard_count}} - ({{dc.card.count}} - {{dc.count}})) +"x ";
+                    }
+                    txt += "{% autoescape off %}{{dc.card.name}}{% endautoescape %}\n";
+                }
+                {% endfor %}
+                {% endif %}
             }
             document.getElementById("txtDeckList").value = txt;
             document.getElementById("divDeckList").style.display = "block";
         }
-        
+
         function copyText() {
             var ele = document.getElementById("txtDeckList");
             ele.select();
             document.execCommand("copy");
             document.getSelection().removeAllRanges();
         }
-        
+
         function showTab(tar, id) {
             var tabcontent = document.getElementsByClassName("tabcontent");
             for (i = 0; i < tabcontent.length; i++) {
@@ -159,25 +365,54 @@
             for (i = 0; i < tablinks.length; i++) {
                 tablinks[i].className = tablinks[i].className.replace(" active", "");
             }
-            
-            sessionStorage.setItem("currentTab",JSON.stringify([tar.id,id]));
+
+            sessionStorage.setItem("currentTab",JSON.stringify([{{deck.id}},tar.id,id]));
 
             document.getElementById(id).style.display = "block";
             tar.className += " active";
         }
+        
+        function hideAddCard() {
+            document.getElementById("divAddCard").style.display = "";
+            document.getElementById("txtCardName").value = "";
+            document.getElementById("numAddMain").value = "0";
+            document.getElementById("numAddSide").value = "0";
+        }
+        
+        function updateList(id, value) {
+            var hdn = document.getElementById("hdn" +id);
+            if(hdn.value != value) {
+                if(hdn.value != "") {
+                    document.getElementById(id+hdn.value).className = "";
+                }
+                document.getElementById(id+value).className = "selected";
+            }
+            hdn.value = value;
+        }
     </script>
 </head>
 <body onload="draw()">
-    {% include "decks/m_top_bar.html" with deck_list=decks %}
+    {% include "decks/m_top_bar.html" with deck_types=deck_types %}
     <form id="frmMain" action="{% url 'decks:deck' deck.id %}" method="post">
         {% csrf_token %}
         <input type="hidden" name="action" id="hdnAction" value="" />
         <div style="margin-top:10px"><input type="text" name="name" value="{{deck.name}}" /></div>
         <div style="margin-top:10px">
+            Deck Type:
+            <select name="deckType">
+                {% for dt in deck_types %}
+                <option value="{{dt.id}}" {% if dt.id == deck.deckType.id %}selected{% endif %}>{{dt.name}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div style="margin-top:10px">
             <label for="chk1">Show Only Missing</label>
             <label class="switch" style="top:-10px"><input type="checkbox" id="chk1" name="show_only_missing" {% if show_only_missing %}checked{% endif %} onchange="doSubmit('ui')" /><span class="slider"></span></label>
         </div>
-        <div style="float:left"><input type="button" onclick="doSubmit('sets')" value="Update Sets" /></div>
+        <div style="float:left">
+            <div><input type="button" value="Add Card" onclick="document.getElementById('divAddCard').style.display='block';" /></div>
+            <div style="margin-top:10px"><input type="button" onclick="doSubmit('sets')" value="Update Sets" /></div>
+        </div>
         <div style="margin-left:10px; float:left; padding-bottom: 10px">
             <div><input type="button" onclick="showDeckList(true)" value="Deck List" /></div>
             <div style="margin-top:10px"><input type="button" onclick="showDeckList(false)" value="Deck Need List" /></div>
@@ -196,6 +431,7 @@
         <div class="tabcontent" id="Main" style="display:block">
             <table class="addBorder" style="text-align:center">
                 <tr>
+                    <th></th>
                     <th>Name</th>
                     <th>Mana</th>
                     <th>CMC</th>
@@ -206,7 +442,13 @@
                 {% for card in deck.deck_list %}
                 {% if not show_only_missing or card.card.count < card.count %}
                 <tr>
-                    <td><a id="a{{card.id}}" href="{% url 'decks:edit_card' card.id %}" {% if card.commander %}style="font-weight:bold"{% endif %}>{{ card.card.name }}</a></td>
+                    <td>
+                        <a class="imagebutton"
+                            href='javascript:ShowCardPopup("{{card.card.name}}","{{card.card.manaCost}}","{{card.card.super_types}}","{{card.card.regular_types}}","{{card.card.sub_types}}","{{card.card.js_text}}","{{card.card.plt}}",{{card.card.colours}})'>
+                            <i class="material-icons md-48">remove_red_eye</i>
+                        </a>
+                    </td>
+                    <td><a href="{% url 'decks:edit_card' card.id %}" {% if card.commander %}style="font-weight:bold"{% endif %}>{{ card.card.name }}</a></td>
                     <td style="padding-left:5px;padding-right:5px">{% include "cards/mana_view.html" with mana=card.card.manaArr %}</td>
                     <td>{{ card.card.cmc }}</td>
                     <td>{{ card.card.regular_types }}</td>
@@ -226,6 +468,7 @@
             <div style="margin-top:10px;font-weight:bold;font-size:0.9em">Sideboard</div>
             <table class="addBorder" style="text-align:center">
                 <tr>
+                    <th></th>
                     <th>Name</th>
                     <th>Mana</th>
                     <th>CMC</th>
@@ -234,9 +477,15 @@
                     <th>Have</th>
                 </tr>
                 {% for card in deck.sidebord %}
-                {% if not show_only_missing or card.card.count < card.count %}
+                {% if not show_only_missing or card.card.count < card.sideboard_count %}
                 <tr>
-                    <td><a id="a{{card.id}}" href="{% url 'decks:edit_card' card.id %}" {% if card.commander %}style="font-weight:bold"{% endif %}>{{ card.card.name }}</a></td>
+                    <td>
+                        <a class="imagebutton"
+                            href='javascript:ShowCardPopup("{{card.card.name}}","{{card.card.manaCost}}","{{card.card.super_types}}","{{card.card.regular_types}}","{{card.card.sub_types}}","{{card.card.js_text}}","{{card.card.plt}}",{{card.card.colours}})'>
+                            <i class="material-icons md-48">remove_red_eye</i>
+                        </a>
+                    </td>
+                    <td><a href="{% url 'decks:edit_card' card.id %}" {% if card.commander %}style="font-weight:bold"{% endif %}>{{ card.card.name }}</a></td>
                     <td style="padding-left:5px;padding-right:5px">{% include "cards/mana_view.html" with mana=card.card.manaArr %}</td>
                     <td>{{ card.card.cmc }}</td>
                     <td>{{ card.card.regular_types }}</td>
@@ -281,6 +530,19 @@
                 </tr>
                 {% endfor %}
             </table>
+            <div style="margin-top:10px">Type Counts</div>
+            <table class="addBorder addPadding">
+                <tr>
+                    <th>Type</th>
+                    <th>Count</th>
+                </tr>
+                {% for key,value in deck.types.items %}
+                <tr>
+                    <td>{{key}}</td>
+                    <td>{{value}}</td>
+                </tr>
+                {% endfor %}
+            </table>
             <div style="margin-top:10px">Land ({{deck.land_count}})</div>
             <div style="border: 1px solid black; padding:2px">
                 {% for dc in deck.land %}
@@ -289,8 +551,37 @@
             </div>
         </div>
         <div style="margin-top:10px">
+            <div>Notes</div>
+            <textarea name="notes" style="width:100%" rows="10">{{ deck.notes }}</textarea>
+        </div>
+        <div style="margin-top:10px">
             <input type="button" onclick="doSubmit('update')" value="Update" />
             <input type="button" onclick="doDelete()" value="Delete" />
+        </div>
+        <div id="divAddCard" class="gray">
+            <div class="popup">
+                <div>Add Card</div>
+                <div>
+                    <input type="text" name="card_name" id="txtCardName" value="{{card_name}}" />
+                    <input type="button" value="Search" onclick="doSubmit('search')" />
+                </div>
+                <div>
+                    <input type="hidden" name="cards" id="hdncards" value="" />
+                    <ul id="cards" class="select" style="height: 240px; overflow-y:auto">
+                        {% for card in card_list %}
+                        <li id="cards{{card.id}}" onclick="updateList('cards','{{card.id}}')">{%autoescape off%}{{ card.name }}{%endautoescape%}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div>Main: <input type="number" name="add_main_count" id="numAddMain" value="{% if add_main_count %}{{add_main_count}}{% else %}0{% endif %}" min="0" style="width:100px"/></div>
+                <div>Sideboard: <input type="number" name="add_side_count" id="numAddSide" value="{% if add_side_count %}{{add_side_count}}{% else %}0{% endif %}" min="0" style="width:100px"/></div>
+                <div style="color:red">{{add_err}}</div>
+                <div>
+                    <input type="button" value="Add" onclick="doSubmit('add')" />
+                    <input type="button" value="Add+" onclick="doSubmit('add_plus')" />
+                    <input type="button" value="Cancel" onclick="hideAddCard()"/>
+                </div>
+            </div>
         </div>
     </form>
     <div id="divDeckList" class="gray">
@@ -303,11 +594,27 @@
             </div>
         </div>
     </div>
+    <div id="divCardPopup" class="gray">
+        <div style="width:600px; margin:15% auto;font-size:36px; padding:16px">
+            <div id="divName" style="float:left;font-size:inherit">test</div>
+            <div id="divMana" style="float:right;font-size:inherit" class="mana"></div>
+            <div id="divType" style="clear:both;font-size:inherit"></div>
+            <div id="divText" style="border:1px solid black;background-color:white; padding:5px; overflow-y:hidden; font-size:0.9em;"></div>
+            <div id="divPTL" style="text-align:right;margin-top:10px;font-size:inherit"></div>
+        </div>
+    </div>
     <script>
         window.onclick = function(event) {
             if(event.target.className == "gray") {
                 event.target.style.display = "";
             }
         }
+        {% if show_add %}document.getElementById('divAddCard').style.display='block';{% endif %}
+        document.getElementById("txtCardName").addEventListener("keyup",function(event) {
+            if(event.keyCode == 13) {
+                event.preventDefault();
+                doSubmit('search');
+            }
+        });
     </script>
 </body>

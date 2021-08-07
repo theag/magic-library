@@ -7,21 +7,29 @@
         .addBorder {
             border-collapse: collapse;
         }
-        
+
         .addBorder, .addBorder td, .addBorder th {
             border: 1px solid black;
         }
     </style>
 </head>
 <body>
-    {% include "decks/m_top_bar.html" with deck_list=decks %}
+    {% include "decks/m_top_bar.html" with deck_types=deck_types %}
     <div style="margin-top:10px; float:left">
         <form id="frmMain" action="{% url 'decks:add' %}" method="post">
             {% csrf_token %}
             <div>Deck Name</div>
             <div style="margin-top:10px"><input type="text" name="name" /></div>
-            <div style="margin-top:10px">Deck List</div>
+            <div style="margin-top:20px">
+                {% for dt in deck_types %}<input type="radio" value="{{dt.id}}" name="deckType" id="rdo{{forloop.counter}}" {% if forloop.counter == 1 %}checked{% endif %}/><label for="rdo{{forloop.counter}}">{{dt.name}}</label>{% endfor %}
+            </div>
+            <div style="margin-top:20px">Deck List</div>
+            <div style="font-size:small">&lt;count&gt;x &lt;card name&gt;</card></div>
             <div style="margin-top:10px"><textarea name="list" cols="25" rows="20"></textarea></div>
+            <div style="margin-top:10px">Sideboard List</div>
+            <div style="margin-top:10px"><textarea name="sideboard" cols="25" rows="20"></textarea></div>
+            <div style="margin-top:10px">Notes</div>
+            <div style="margin-top:10px"><textarea name="notes" style="width:100%" rows="10"></textarea></div>
             <div style="margin-top:10px">
                 <input type="submit" value="Save" />
                 <input type="button" value="Cancel" onclick="window.location.href='{% url 'decks:index' %}';" />
@@ -32,9 +40,12 @@
     <div style="margin-top:10px;float:left;text-color:red">{{ error }}</div>
     {% endif %}
     {% if saved %}
-    <script>
-        alert("{{ saved }}");
-        window.location.href='{% url 'decks:index' %}';
-    </script>
+    <div class="gray" style="display:block">
+        <div class="popup">
+            <div>Issue with Deck List</div>
+            <div>{{saved}}</div>
+            <div><input type="button" onclick="window.location.href='{% url 'decks:deck' new_deck %}';" value="Ok" /></div>
+        </div>
+    </div>
     {% endif %}
 </body>

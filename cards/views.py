@@ -172,6 +172,14 @@ def mobile(request):
     else:
         return False
 
+def arrayGet(request, index, is_int):
+    if mobile(request):
+        return json.loads(request.POST[index])
+    elif is_int:
+        return list(map(int,request.POST.getlist(index)))
+    else:
+        return request.POST.getlist(index)
+
 # Create your views here.
 def index(request):
     context = None
@@ -478,13 +486,15 @@ def add_json(request):
         cards = json.load(f)["data"]
         f.close()
         if action == "search":
-            context = {"results":[],"name":request.POST["name"],"notes":request.POST["notes"],"decks":Deck.objects.all().order_by("name"),"deck_choices":json.loads(request.POST['deck_choices'])}
+            context = {"results":[],"name":request.POST["name"],"notes":request.POST["notes"],"decks":Deck.objects.all().order_by("name"),"deck_choices":arrayGet(request,'deck_choices',True)}
+            if "add_sideboard" in request.POST:
+                context["add_sideboard"] = "add_sideboard"
             if len(request.POST["name"]) > 0:
                 for name in cards.keys():
                     if name.lower().startswith(request.POST["name"].lower()):
-                        context["results"].append(name)
+                        context["results"].append(name.replace("'","&#39;"))
         elif action == "add" or action == "addp":
-            for name in json.loads(request.POST['cards']):
+            for name in arrayGet(request,'cards',False):
                 c = Card(name=name,
                     text=cards[name]['text'],
                     notes=request.POST['notes'],
@@ -546,13 +556,20 @@ def add_json(request):
                                     set.cards.add(c)
                                 break
                 #decks
-                for d_id in json.loads(request.POST['deck_choices']):
-                    dc = DeckCard(card=c,count=1,deck=Deck.objects.get(pk=int(d_id)))
+                for d_id in arrayGet(request,'deck_choices',True):
+                    if "add_sideboard" in request.POST:
+                        dc = DeckCard(card=c,sideboard_count=1,deck=Deck.objects.get(pk=int(d_id)))
+                    else:
+                        dc = DeckCard(card=c,count=1,deck=Deck.objects.get(pk=int(d_id)))
                     dc.save()
             if action == "add":
                 return redirect('/cards/')
             else:
-                context = {"results":[],"notes":request.POST["notes"],"decks":Deck.objects.all().order_by("name"),"deck_choices":json.loads(request.POST['deck_choices'])}
+                context = {"results":[],"notes":request.POST["notes"],
+                    "decks":Deck.objects.all().order_by("name"),
+                    "deck_choices":arrayGet(request,'deck_choices',True)}
+                if "add_sideboard" in request.POST:
+                    context["add_sideboard"] = "add_sideboard"
     except KeyError as detail:
         print("key error: {}".format(detail))
     if mobile(request):

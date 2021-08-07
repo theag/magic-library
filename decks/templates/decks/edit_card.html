@@ -22,8 +22,15 @@
     <h1>Magic Library - Decks</h1>
     {% include "decks/horizontal_navigation_bar.html" only %}
     <ul class="horizontal_nav_bar">
-        {% for d in decks %}
-        <li><a href="{% url 'decks:deck' d.id %}">{{ d.name }}</a></li>
+        {% for dt in deck_types %}
+        <li class="dropdown">
+            <a href="javascript:void(0)" class="dropbtn">{{ dt.name }}</a>
+            <div class="dropdown-content">
+                {% for d in dt.sorted_decks %}
+                <a href="{% url 'decks:deck' d.id %}">{{d.name}}</a>
+                {% endfor %}
+            </div>
+        </li>
         {% endfor %}
     </ul>
     <div style="margin-top:10px">

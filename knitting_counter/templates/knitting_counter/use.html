@@ -1,0 +1,108 @@
+{% load static %}
+<head>
+    <title>Knitting Counters</title>
+    <link href="{% static 'kstyles.css' %}" type="text/css" rel="stylesheet"></link>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script>
+        function doSubmit(action) {
+            document.getElementById("hdnAction").value = action;
+            document.getElementById("frmMain").submit();
+        }
+        
+        var current_counter = {{current_counter}};
+        
+        function changeCounter(id) {
+            if(current_counter != id) {
+                document.getElementById("display"+current_counter).style.display = "none";
+                document.getElementById("display"+id).style.display = "";
+                document.getElementById("hdnCurrentCounter").value = id;
+                current_counter = id;
+            }
+        }
+        
+        {% for c in project.counter_set.all %}
+        function increment{{c.id}}() {
+            var val = document.getElementById("hdnCount{{c.id}}").value;
+            val++;
+            {% if c.use_repeats %}
+            if(val > {{c.repeat_size}}) {
+                val = 1;
+                var r = document.getElementById("hdnRepeat{{c.id}}").value;
+                r++;
+                document.getElementById("hdnRepeat{{c.id}}").value = r;
+                document.getElementById("repeat{{c.id}}").innerText = r;
+            }
+            {% endif %}
+            document.getElementById("hdnCount{{c.id}}").value = val;
+            document.getElementById("row{{c.id}}").innerText = val;
+        }
+        
+        function decrement{{c.id}}() {
+            var val = document.getElementById("hdnCount{{c.id}}").value;
+            val--;
+            {% if c.use_repeats %}
+            var r = document.getElementById("hdnRepeat{{c.id}}").value;
+            if(val < 1 && r > 0) {
+                val = {{c.repeat_size}};
+                r--;
+                document.getElementById("hdnRepeat{{c.id}}").value = r;
+                document.getElementById("repeat{{c.id}}").innerText = r;
+            } else if(val < 0) {
+                val = 0;
+            }
+            {% else %}
+            if(val < 0) {
+                val = 0;
+            }
+            {% endif %}
+            document.getElementById("hdnCount{{c.id}}").value = val;
+            document.getElementById("row{{c.id}}").innerText = val;
+        }
+        {% endfor %}
+    </script>
+</head>
+<body>
+    <h1>{{project.name}} <a href="{% url 'knitting_counter:edit' project.id %}" class="button"><i class="material-icons">edit</i></a></h1>
+    {% for c in project.counter_set.all %}
+    <div class="counter-display">
+        <button type="button" onclick="changeCounter({{c.id}})" class="button5">{{c.name}}</button>
+        <div id="display{{c.id}}"{% if current_counter != c.id %} style="display:none"{% endif %}>
+            <table>
+                <tr>
+                    <td style="height:100%"></td>
+                    <td rowspan="5"><button type="button" class="button4" onclick="increment{{c.id}}()"><i class="material-icons md-48">add</i></button></td>
+                </tr>
+                <tr>
+                    <td>Row</td>
+                </tr>
+                <tr>
+                    <td id="row{{c.id}}">{{c.count}}</td>
+                </tr>
+                <tr>
+                    <td>Repeat</td>
+                </tr>
+                <tr>
+                    <td id="repeat{{c.id}}">{{c.repeat_count}}</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td rowspan="4"><button type="button" class="button1" style="width:100%" onclick="decrement{{c.id}}()"><i class="material-icons md-48">remove</i></button></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    {% endfor %}
+    <div style="margin-top:10px">
+        <form id="frmMain" action="{% url 'knitting_counter:use' project.id %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="button2">Save</button>
+            <button type="button" class="button2" onclick="doSubmit('save')">Save and Close</button>
+            <input type="hidden" id="hdnAction" name="action" value="save+" />
+            <input type="hidden" id="hdnCurrentCounter" name="current_counter" value="{{current_counter}}" />
+            {% for c in project.counter_set.all %}
+            <input type="hidden" id="hdnCount{{c.id}}" value="{{c.count}}" name="count-{{c.id}}" />
+            <input type="hidden" id="hdnRepeat{{c.id}}" value="{{c.repeat_count}}" name="repeat_count-{{c.id}}" />
+            {% endfor %}
+        </form>
+    </div>
+</body>

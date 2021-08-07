@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from django.conf import settings
-from .models import Deck, DeckCard
+from .models import Deck, DeckCard, DeckType
 from cards.models import Card, Set, Type
 
 import os, json, re
@@ -17,7 +17,29 @@ def mobile(request):
 
 # Create your views here.
 def index(request):
-    context = {"decks":Deck.objects.all().order_by('name')}
+    try:
+        action = request.POST['action']
+        if action != "reset":
+            arr = json.loads(action)
+            ids = []
+            for i, val in enumerate(arr):
+                try:
+                    id = int(val)
+                    ids.append(id)
+                    dt = DeckType(pk=id)
+                    dt.name = request.POST['name-{}'.format(id)]
+                    dt.sort_order = i
+                    dt.save()
+                except ValueError:
+                    dt = DeckType(name=val,sort_order=i)
+                    dt.save()
+                    ids.append(dt.id)
+            to_delete = DeckType.objects.exclude(id__in=ids)
+            for dt in to_delete:
+                dt.delete()
+    except KeyError:
+        pass
+    context = {"deck_types":DeckType.objects.all().order_by('sort_order','name')}
     if mobile(request):
         return render(request, 'decks/m_index.html', context)
     else:
@@ -25,16 +47,25 @@ def index(request):
 
 def add(request):
     try:
-        context = {"decks":Deck.objects.all().order_by('name')}
+        context = {"decks":Deck.objects.all().order_by('name'),"deck_types":DeckType.objects.all().order_by('sort_order','name')}
         name = request.POST['name'].strip()
         if len(name) > 0:
-            d = Deck(name=name)
+            d = Deck(name=name,notes=request.POST['notes'],deckType=DeckType.objects.get(pk=int(request.POST['deckType'])))
             d.save()
             p = re.compile("(\\d+)x (.+)")
             issue_list = []
             cards = None
-            for line in request.POST['list'].strip().split(os.linesep):
-                m = p.match(line)
+            if len(request.POST['list'].strip().replace('\r\n','\n')) != 0:
+                main = request.POST['list'].strip().replace('\r\n','\n').split('\n')
+            else:
+                main = []
+            if len(request.POST['sideboard'].strip().replace('\r\n','\n')) != 0:
+                total = main + request.POST['sideboard'].strip().replace('\r\n','\n').split('\n')
+            else:
+                total = main
+            print(total)
+            for i,line in enumerate(total):
+                m = p.match(line.strip())
                 if m is None:
                     issue_list.append("Line {} is badly formed. Card could not be added.".format(line))
                 else:
@@ -106,17 +137,24 @@ def add(request):
                                                     set = set[0]
                                                 set.cards.add(c)
                                             break
-                            dc = DeckCard(card=c,count=int(m.groups()[0]),deck=d)
+                            if i < len(main):
+                                dc = DeckCard(card=c,count=int(m.groups()[0]),deck=d)
+                            else:
+                                dc = DeckCard(card=c,sideboard_count=int(m.groups()[0]),deck=d)
                             dc.save()
                         else:
                             issue_list.append("Could not find a card named {}. Card could not be added.".format(m.groups()[1]))
                     else:
-                        dc = DeckCard(card=c[0],count=int(m.groups()[0]),deck=d)
+                        if i < len(main):
+                            dc = DeckCard(card=c[0],count=int(m.groups()[0]),deck=d)
+                        else:
+                            dc = DeckCard(card=c[0],sideboard_count=int(m.groups()[0]),deck=d)
                         dc.save()
             if len(issue_list) > 0:
                 context['saved'] = '\\n'.join(issue_list)
+                context['new_deck'] = d.id
             else:
-                return redirect('/decks/')
+                return redirect('/decks/{}'.format(d.id))
         else:
             context['error'] = "Deck must have a name."
         if mobile(request):
@@ -128,6 +166,8 @@ def add(request):
             return render(request, 'decks/m_add.html', context)
         else:
             return render(request, 'decks/add.html', context)
+    except OSError as ex:
+        print(ex)
 
 def detail(request, deck_id):
     context = None
@@ -139,6 +179,8 @@ def detail(request, deck_id):
         elif action == 'update':
             d = Deck.objects.get(pk=deck_id)
             d.name = request.POST["name"]
+            d.deckType = DeckType.objects.get(pk=int(request.POST['deckType']))
+            d.notes = request.POST["notes"]
             d.save()
             for dc in d.deckcard_set.all():
                 if 'count-{}'.format(dc.id) in request.POST:
@@ -180,6 +222,46 @@ def detail(request, deck_id):
                                             set = set[0]
                                         set.cards.add(c)
                                     break
+        elif action == "search":
+            context = {"card_name":request.POST["card_name"],"add_main_count":request.POST["add_main_count"],"add_side_count":request.POST["add_side_count"],"show_add":"show_add"}
+            if request.POST["card_name"] != "":
+                context["card_list"] = Card.objects.filter(name__startswith=request.POST["card_name"]).order_by('name')
+        elif action.startswith("add"):
+            if request.POST["add_main_count"] == "0" and request.POST["add_side_count"] == "0":
+                context = {"card_name":request.POST["card_name"],
+                    "add_main_count":request.POST["add_main_count"],
+                    "add_side_count":request.POST["add_side_count"],
+                    "add_err":"You must enter a value for either main or sideboard.",
+                    "show_add":"show_add"}
+                context["card_list"] = Card.objects.filter(name__startswith=request.POST["card_name"]).order_by('name')
+            else:
+                if "cards" in request.POST and request.POST["cards"] != "":
+                    c = Card.objects.get(pk=request.POST["cards"])
+                    dc = DeckCard.objects.filter(card=c,deck_id__exact=deck_id)
+                    if len(dc) > 0:
+                        context = {"card_name":request.POST["card_name"],
+                            "add_main_count":request.POST["add_main_count"],
+                            "add_side_count":request.POST["add_side_count"],
+                            "add_err":"{} is already in the deck.".format(c.name),
+                            "show_add":"show_add"}
+                        context["card_list"] = Card.objects.filter(name__startswith=request.POST["card_name"]).order_by('name')
+                    else:
+                        dc = DeckCard(card=c,deck=Deck.objects.get(pk=deck_id),count=request.POST["add_main_count"],sideboard_count=request.POST["add_side_count"])
+                        dc.save()
+                        if action == "add_plus":
+                            context = {"card_name":"",
+                                "add_main_count":0,
+                                "add_side_count":0,
+                                "show_add":"show_add"}
+                else:
+                    context = {"card_name":request.POST["card_name"],
+                        "add_main_count":request.POST["add_main_count"],
+                        "add_side_count":request.POST["add_side_count"],
+                        "add_err":"You must select a card.",
+                        "show_add":"show_add"}
+                    context["card_list"] = Card.objects.filter(name__startswith=request.POST["card_name"]).order_by('name')
+        elif action.startswith("sort"):
+            context = {"sort":int(action[4:])}
     except KeyError:
         if 'show_only_missing' in request.session:
             if request.session['show_only_missing']:
@@ -189,7 +271,9 @@ def detail(request, deck_id):
     else:
         context["decks"] = Deck.objects.all().order_by('name')
         context["deck"] = Deck.objects.get(pk=deck_id)
-    
+    if "sort" not in context:
+        context["sort"] = 0
+    context["deck_types"] = DeckType.objects.all().order_by('sort_order','name')
     if mobile(request):
         return render(request, 'decks/m_edit.html', context)
     else:
@@ -215,8 +299,9 @@ def edit_card(request, deck_card_id):
             c.save()
         return redirect('/decks/{}'.format(dc.deck.id))
     except KeyError:
-        context = {"decks":Deck.objects.all().order_by('name'),"deck_card":DeckCard.objects.get(pk=deck_card_id)}
+        context = {"deck_types":DeckType.objects.all().order_by('sort_order','name'),"deck_card":DeckCard.objects.get(pk=deck_card_id)}
         context["other_cards"] = DeckCard.objects.filter(card=context["deck_card"].card.id)
+    
     if mobile(request):
         return render(request, 'decks/m_edit_card.html', context)
     else:

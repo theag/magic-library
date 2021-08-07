@@ -20,7 +20,7 @@
     </script>
 </head>
 <body>
-    {% include "decks/m_top_bar.html" with deck_list=decks %}
+    {% include "decks/m_top_bar.html" with deck_types=deck_types %}
     <div style="margin-top:10px">
         <form id="frmMain" action="{% url 'decks:edit_card' deck_card.id %}" method="post">
             {% csrf_token %}

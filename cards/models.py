@@ -42,6 +42,13 @@ class Card(models.Model):
                     if len(s) == 1 or s[1] != 'X':
                         rv += 1
             return rv
+            
+    def cmc_num(self):
+        rv = self.cmc()
+        if rv == '':
+            return -1
+        else:
+            return rv
     
     def manaArr(self):
         return self.manaCost.split(',')

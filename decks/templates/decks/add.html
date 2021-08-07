@@ -6,7 +6,7 @@
         .addBorder {
             border-collapse: collapse;
         }
-        
+
         .addBorder, .addBorder td, .addBorder th {
             border: 1px solid black;
         }
@@ -20,9 +20,28 @@
             {% csrf_token %}
             <div>Deck Name</div>
             <div style="margin-top:10px"><input type="text" name="name" /></div>
-            <div style="margin-top:10px">Deck List</div>
-            <div style="margin-top:10px"><textarea name="list" cols="25" rows="20"></textarea></div>
             <div style="margin-top:10px">
+                Deck Type
+                <select name="deckType">
+                    {% for dt in deck_types %}
+                    <option value="{{dt.id}}">{{dt.name}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div style="margin-top:10px; margin-bottom:10px; float:left">
+                <div>Deck List</div>
+                <div style="font-size:small">&lt;count&gt;x &lt;card name&gt;</card></div>
+                <div style="margin-top:10px"><textarea name="list" cols="25" rows="20"></textarea></div>
+            </div>
+            <div style="margin-top:10px; margin-bottom:10px; margin-left:10px; float:left">
+                <div>Sideboard List</div>
+                <div style="margin-top:10px"><textarea name="sideboard" cols="25" rows="20"></textarea></div>
+            </div>
+            <div style="float:left; margin-left: 10px">
+                <div style="margin-top:10px">Notes</div>
+                <div style="margin-top:10px"><textarea name="notes" cols="50" rows="10"></textarea></div>
+            </div>
+            <div style="clear: both">
                 <input type="submit" value="Save" />
                 <input type="button" value="Cancel" onclick="window.location.href='{% url 'decks:index' %}';" />
             </div>
@@ -32,9 +51,12 @@
     <div style="margin-top:10px;float:left;text-color:red">{{ error }}</div>
     {% endif %}
     {% if saved %}
-    <script>
-        alert("{{ saved }}");
-        window.location.href='{% url 'decks:index' %}';
-    </script>
+    <div class="gray" style="display:block">
+        <div class="popup">
+            <div>Issue with Deck List</div>
+            <div>{{saved}}</div>
+            <div><input type="button" onclick="window.location.href='{% url 'decks:index' %}';" value="Ok" /></div>
+        </div>
+    </div>
     {% endif %}
 </body>

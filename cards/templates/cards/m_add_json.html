@@ -14,7 +14,7 @@
             var lst = JSON.parse(hdn.value);
             var ind = lst.indexOf(value);
             if(ind < 0) {
-                lst.splice(-1,0,value);
+                lst.splice(-1,0,value.replace("&#39;","'"));
                 document.getElementById(id+value).className = "selected";
             } else {
                 lst.splice(ind,1);
@@ -38,7 +38,7 @@
                 <input type="hidden" name="cards" id="hdncards" value="[]" />
                 <ul id="cards" class="select" style="height: 240px; overflow-y:auto">
                     {% for result in results %}
-                    <li id="cards{{result}}" onclick="updateList('cards','{{result}}')">{{ result }}</li>
+                    <li id="cards{{result}}" onclick="updateList('cards','{{result}}')">{%autoescape off%}{{ result }}{%endautoescape%}</li>
                     {% endfor %}
                 </ul>
             </div>
@@ -50,6 +50,10 @@
                     <li id="deck_choices{{d.id}}" onclick="updateList('deck_choices',{{d.id}})" {% if d.id in deck_choices %}class="selected"{% endif %}>{{d.name}}</li>
                     {% endfor %}
                 </ul>
+            </div>
+            <div>
+                <input type="checkbox" name="add_sideboard" id="chk1" {% if add_sideboard %}checked{% endif %} />
+                <label for="chk1">Add to Sideboard</label>
             </div>
             <div style="margin-top:10px">Add to Notes</div>
             <div style="margin-top:10px"><textarea rows="5" cols="30" name="notes">{{ notes }}</textarea></div>
