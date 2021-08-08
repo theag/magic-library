@@ -10,6 +10,9 @@
         .addBorder, .addBorder td, .addBorder th {
             border: 1px solid black;
         }
+        {% for dt in deck_types %}
+        #dropitem{{ dt.id }}:hover #dropdown{{ dt.id }} {display: block;}
+        {% endfor %}
     </style>
     <script>
         function doSubmit(action) {
@@ -141,14 +144,12 @@
     {% if deck_types %}
     <ul class="horizontal_nav_bar">
         {% for dt in deck_types %}
-        <li class="dropdown">
-            <a href="javascript:void(0)" class="dropbtn">{{ dt.name }}</a>
-            <div class="dropdown-content">
-                {% if dt.sorted_decks.len > 0 %}
+        <li class="dropdown" id="dropitem{{ dt.id }}">
+            <a href="javascript:void(0)">{{ dt.name }}</a>
+            <div class="dropdown-content" id="dropdown{{ dt.id }}">
                 {% for d in dt.sorted_decks %}
                 <a href="{% url 'decks:deck' d.id %}">{{d.name}}</a>
                 {% endfor %}
-                {% endif %}
             </div>
         </li>
         {% endfor %}
