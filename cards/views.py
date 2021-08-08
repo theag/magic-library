@@ -494,9 +494,9 @@ def add_json(request):
                     if name.lower().startswith(request.POST["name"].lower()):
                         cn = Card.objects.filter(name=name)
                         if len(cn) > 0:
-                            context["results"].append(name.replace("'","&#39;")+" * (" + str(cn[0].count) +")")
+                            context["results"].append(name+" * (" + str(cn[0].count) +")")
                         else:
-                            context["results"].append(name.replace("'","&#39;"))
+                            context["results"].append(name)#.replace("'","&#39;"))
         elif action == "add" or action == "addp":
             for name in arrayGet(request,'cards',False):
                 c = Card(name=name,
