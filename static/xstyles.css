@@ -1,0 +1,77 @@
+body {
+    font-family: Arial, sans-serif;
+}
+
+.header {
+	width: 100%;
+	height: 50px;
+	position: fixed;
+	z-index: 1;
+	top:0;
+	left:0;
+	padding-left: 30px;
+}
+
+.side_nav_bar {
+	width: 160px;
+	position: fixed;
+	z-index: 1;
+	top: 50;
+	left: 0;
+	overflow-x: hidden;
+	padding-top:20px;
+}
+
+/* The navigation menu links */
+.side_nav_bar a {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  color: black;
+  display: block;
+}
+
+/* When you mouse over the navigation links, change their color */
+.side_nav_bar a:hover {
+  color: cornflower;
+}
+
+/* Style page content */
+.side_nav_bar + div {
+  margin-left: 160px; /* Same as the width of the sidebar */
+  margin-top: 50px;
+  padding: 20px 10px;
+}
+
+.floss_bar {
+	width:120px;
+	position:fixed;
+	top:50;
+	left:180;
+	padding-top:20px;
+}
+
+.floss_bar + div {
+  margin-left: 288px; /* Same as the width of the sidebar */
+  padding: 20px 10px;
+}
+
+.floss_bar .palette {
+	float: left;
+	width:50px;
+	height:50px;
+	border-style: solid;
+	border-color: lightgray;
+	border-width: 2px;
+	margin:3px;
+}
+
+.floss_bar .active {
+	border-color: black;
+	border-style: solid;
+}
+
+.floss_bar .palette:hover:not(.active) {
+	border-color: gray;
+	border-style: solid;
+}
+	

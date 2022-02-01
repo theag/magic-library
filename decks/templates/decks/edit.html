@@ -17,6 +17,7 @@
     </style>
     <script>
         function doSubmit(action) {
+			document.getElementById("divLoadPopup").style.display = "block";
             document.getElementById("hdnAction").value = action;
             document.getElementById("frmMain").submit();
         }
@@ -390,6 +391,8 @@
             <div style="margin-top:10px">
                 <span>Show Only Missing</span>
                 <label class="switch" style="top:-10px"><input type="checkbox" name="show_only_missing" {% if show_only_missing %}checked{% endif %} onchange="doSubmit('ui')" /><span class="slider"></span></label>
+				<span>Show extra info
+				<label class="switch" style="top:-10px"><input type="checkbox" name="show_extra" {% if show_extra %}checked{% endif %} onchange="doSubmit('ui')" /><span class="slider"></span></label>
                 <div style="float:right"><input type="button" value="Add Card" onclick="document.getElementById('divAddCard').style.display='block';" /></div>
             </div>
             <table class="addBorder" style="text-align:center">
@@ -400,6 +403,10 @@
                     <th><a class="plain" {% if sort != 2 %}href="javascript:doSubmit('sort2');"{% endif %}>Type</a></th>
                     <th>Count</th>
                     <th>Have</th>
+					{% if show_extra %}
+					<th>Adds Mana</th>
+					<th>Notes</th>
+					{% endif %}
                 </tr>
                 {% if sort == 0 %}
                 {% for card in deck.deck_list %}
@@ -411,6 +418,10 @@
                     <td>{{ card.card.regular_types }}</td>
                     <td><input type="number" name="count-{{ card.id }}" min="0" value="{{card.count}}" style="width:50px" /></td>
                     <td>{{ card.card.count }}</td>
+					{% if show_extra %}
+					<td><input type="checkbox" {% if card.card.addMana %}checked {% endif %}/></td>
+					<td>{{ card.card.notes }}</td>
+					{% endif %}
                 </tr>
                 {% endif %}
                 {% endfor %}
@@ -424,6 +435,10 @@
                     <td>{{ card.card.regular_types }}</td>
                     <td><input type="number" name="count-{{ card.id }}" min="0" value="{{card.count}}" style="width:50px" /></td>
                     <td>{{ card.card.count }}</td>
+					{% if show_extra %}
+					<td><input type="checkbox" {% if card.card.addMana %}checked {% endif %}/></td>
+					<td>{{ card.card.notes }}</td>
+					{% endif %}
                 </tr>
                 {% endif %}
                 {% endfor %}
@@ -437,6 +452,10 @@
                     <td>{{ card.card.regular_types }}</td>
                     <td><input type="number" name="count-{{ card.id }}" min="0" value="{{card.count}}" style="width:50px" /></td>
                     <td>{{ card.card.count }}</td>
+					{% if show_extra %}
+					<td><input type="checkbox" {% if card.card.addMana %}checked {% endif %}/></td>
+					<td>{{ card.card.notes }}</td>
+					{% endif %}
                 </tr>
                 {% endif %}
                 {% endfor %}
@@ -582,6 +601,11 @@
             </div>
         </div>
     </div>
+	<div id="divLoadPopup" class="gray">
+		<div class="popup" style="width:100px;background-color:GoldenRod;border-width:0">
+			<div style="background-color:GoldenRod;padding:10px;color:black">Loading</div>
+		</div>
+	</div>
     <script>
         {% for card in deck.deck_list %}
         {% if not show_only_missing or card.card.count < card.count %}
