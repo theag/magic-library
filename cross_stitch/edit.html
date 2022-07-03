@@ -1,0 +1,16 @@
+{% load static %}
+<head>
+	<title>Thea's Cross Stitch Patterns</title>
+	<link href="{% static 'xstyles.css' %}" type="text/css" rel="stylesheet"></link>
+</head>
+<body>
+	<div class="header"><h1>Edit Pattern: {{ pattern.name }}</h1></div>
+	{% include "cross_stitch/side_nav.html" %}
+	<div>
+		<form action="{% url 'cross_stitch:new' %}" method="post">
+			{% csrf_token %}
+			
+			<input type="Submit" />
+		</form>
+	</div>
+</body>

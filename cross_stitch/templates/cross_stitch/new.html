@@ -1,0 +1,29 @@
+{% load static %}
+<head>
+	<title>Thea's Cross Stitch Patterns</title>
+	<link href="{% static 'xstyles.css' %}" type="text/css" rel="stylesheet"></link>
+</head>
+<body>
+	<div class="header"><h1>New Pattern</h1></div>
+	{% include "cross_stitch/side_nav.html" %}
+	<div>
+		<form action="{% url 'cross_stitch:new' %}" method="post">
+			{% csrf_token %}
+			<table>
+				<tr>
+					<td>Name</td>
+					<td><input type="text" name="name" value="{{pattern.name}}" /></td>
+				</tr>
+				<tr>
+					<td>Width</td>
+					<td><input type="number" min="1" name="width" value="{{pattern.width}}"/></td>
+				</tr>
+				<tr>
+					<td>Height</td>
+					<td><input type="number" min="1" name="height" value="{{pattern.height}}"/></td>
+				</tr>
+			</table>
+			<input type="Submit" />
+		</form>
+	</div>
+</body>

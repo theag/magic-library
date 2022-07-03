@@ -1,0 +1,21 @@
+{% load static %}
+<head>
+	<title>Thea's Cross Stitch Patterns</title>
+	<link href="{% static 'xstyles.css' %}" type="text/css" rel="stylesheet"></link>
+	<script>
+		{% autoescape off %}
+
+		{% endautoescape %}
+	</script>
+</head>
+<body onload="draw_canvas()">
+	<div class="header"><h1>Edit Pattern Floss: {{ pattern.name }} ({{pattern.width}}x{{pattern.height}})</h1></div>
+	{% include "cross_stitch/side_nav.html" %}
+	<div>
+		<form action="{% url 'cross_stitch:edit_floss' pattern.id %}" method="post">
+			{% csrf_token %}
+			<input type="hidden" name="action" id="inact" />
+			
+		</form>
+	</div>
+</body>

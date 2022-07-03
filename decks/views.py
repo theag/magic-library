@@ -199,6 +199,11 @@ def detail(request, deck_id):
                 request.session['show_only_missing'] = True
             else:
                 request.session['show_only_missing'] = False
+            if "show_extra" in request.POST:
+                context = {"show_extra":"show_extra"}
+                request.session['show_extra'] = True
+            else:
+                request.session['show_extra'] = False
         elif action == 'sets':
             f = open(os.path.join(settings.BASE_DIR, 'SetList.json'),'r',encoding='utf8')
             sets = json.load(f)["data"]
@@ -264,10 +269,20 @@ def detail(request, deck_id):
                     context["card_list"] = Card.objects.filter(name__startswith=request.POST["card_name"]).order_by('name')
         elif action.startswith("sort"):
             context = {"sort":int(action[4:])}
+        if not action == "ui":
+            if 'show_only_missing' in request.session:
+                if request.session['show_only_missing']:
+                    context = {"show_only_missing":"show_only_missing"}
+            if 'show_extra' in request.session:
+                if request.session['show_extra']:
+                    context = {"show_extra":"show_extra"}
     except KeyError:
         if 'show_only_missing' in request.session:
             if request.session['show_only_missing']:
                 context = {"show_only_missing":"show_only_missing"}
+        if 'show_extra' in request.session:
+            if request.session['show_extra']:
+                context = {"show_extra":"show_extra"}
     if context is None:
         context = {"decks":Deck.objects.all().order_by('name'),"deck":Deck.objects.get(pk=deck_id)}
     else:
