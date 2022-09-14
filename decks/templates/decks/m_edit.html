@@ -323,9 +323,9 @@
                 {% for dc in deck.deck_list %}
                 if(showAll || {{dc.card.count}} < {{dc.count}}) {
                     if(showAll) {
-                        txt += "{{dc.count}}x ";
+                        txt += "{{dc.count}} ";
                     } else {
-                        txt += ({{dc.count}} - {{dc.card.count}}) +"x ";
+                        txt += ({{dc.count}} - {{dc.card.count}}) +" ";
                     }
                     txt += "{% autoescape off %}{{dc.card.name}}{% endautoescape %}\n";
                 }
@@ -335,9 +335,9 @@
                 {% for dc in deck.sideboard %}
                 if(showAll || {{dc.card.count}} < ({{dc.sideboard_count}}+{{dc.count}})) {
                     if(showAll) {
-                        txt += "{{dc.sideboard_count}}x ";
+                        txt += "{{dc.sideboard_count}} ";
                     } else {
-                        txt += ({{dc.sideboard_count}} - ({{dc.card.count}} - {{dc.count}})) +"x ";
+                        txt += ({{dc.sideboard_count}} - ({{dc.card.count}} - {{dc.count}})) +" ";
                     }
                     txt += "{% autoescape off %}{{dc.card.name}}{% endautoescape %}\n";
                 }
