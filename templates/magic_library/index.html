@@ -10,4 +10,26 @@
         <li><a href="{% url 'cards:index' %}">Cards</a></li>
         <li><a href="{% url 'decks:index' %}">Decks</a></li>
     </ul>
+    <form id="frmMain" action="{% url 'index' %}" method="post">
+        {% csrf_token %}
+        <div style="float:left">
+            <div>.dek</div>
+            <div><textarea name="xml" cols="50" rows="20"></textarea></div>
+        </div>
+        <div style="float:left;margin-left:10px">
+            <div>list</div>
+            <div style="border:1px solid black;min-width:100px;min-height:100px">
+                {% for t in deck_list.0 %}
+                <div>{{t}}</div>
+                {% endfor %}
+                {% if deck_list %}
+                <div>Sideboard</div>
+                {% endif %}
+                {% for t in deck_list.1 %}
+                <div>{{t}}</div>
+                {% endfor %}
+            </div>
+        </div>
+        <div style="clear:both;padding-top:10px"><input type="submit" value="Get List" /></div>
+    </form>
 </body>
