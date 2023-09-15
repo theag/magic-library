@@ -18,12 +18,12 @@
         </div>
         <div style="float:left;margin-left:10px">
             <div>list</div>
-            <div style="border:1px solid black;min-width:100px;min-height:100px">
+            <div style="border:1px solid black;min-width:100px;min-height:100px;padding:10px">
                 {% for t in deck_list.0 %}
                 <div>{{t}}</div>
                 {% endfor %}
                 {% if deck_list %}
-                <div>Sideboard</div>
+                <div>SIDEBOARD</div>
                 {% endif %}
                 {% for t in deck_list.1 %}
                 <div>{{t}}</div>
